@@ -52,6 +52,7 @@ SEL_CERRAR = "#modalWrap .ant-drawer-open .ant-drawer-close"
 T_DRAWER = 20          # esperar a que abra el drawer
 T_BLOQUE = 20          # esperar a que aparezca razón / sugerencia
 T_CURVA = 30           # esperar a que la gráfica se dibuje
+T_ANTES_CAPTURA = 5    # pausa fija con la gráfica ya visible, para que cargue completa antes de la foto
 T_ESTABLE = 1.5        # pausa tras detectar la gráfica (animación de ECharts/AntV)
 INTENTOS = 3
 
@@ -143,6 +144,7 @@ class DetalleAlarmaMixin:
                         t1 = el.size
                         time.sleep(T_ESTABLE)
                         if el.size == t1:
+                            time.sleep(T_ANTES_CAPTURA)
                             return el
                 except StaleElementReferenceException:
                     pass

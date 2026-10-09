@@ -7,6 +7,7 @@ from database.db import Database, AlarmaRepository
 from reports.excel_report import ExcelReportGenerator
 from reports.pdf_report import PDFReportGenerator
 from notifications.mailer import ReportMailer
+from scraper.alarm_translations import traducir_tipo
 
 
 class GoodweBot:
@@ -49,6 +50,7 @@ class GoodweBot:
                 if resultado in ("nueva", "persistente"):
                     try:
                         alarma = scraper.completar_detalle_y_curva(alarma, fila_index)
+                        self.repo.actualizar_detalle(alarma)  # razón/sugerencia a la BD (para el Excel)
                     except Exception as e:
                         # Una alarma con problemas no debe tumbar el ciclo completo:
                         # se reporta con los datos de la tabla, sin detalle ampliado.
@@ -61,6 +63,7 @@ class GoodweBot:
                         f"curva={'sí' if getattr(alarma, 'ruta_curva', None) else 'NO'}"
                     )
 
+            self._sincronizar_base_de_datos(alarmas, resumen)
             self.logger.info(f"Resumen del ciclo: {resumen}")
 
             if fichas:
@@ -77,6 +80,27 @@ class GoodweBot:
             self.logger.info("Ciclo finalizado. Navegador cerrado.")
 
         return resumen
+
+    def _sincronizar_base_de_datos(self, alarmas, resumen):
+        """
+        Cierra en la BD las alarmas que ya no están en la plataforma y limpia el historial viejo.
+        Si la lectura vino vacía NO se sincroniza: sería indistinguible de una tabla que no cargó,
+        y se marcarían como resueltas alarmas que siguen activas.
+        """
+        try:
+            if not alarmas:
+                self.logger.warning("Lectura vacía: no se sincroniza la BD en este ciclo.")
+                return
+            cerradas = self.repo.sincronizar_activas(alarmas)
+            for r in cerradas:
+                self.logger.info(f"Alarma cerrada (ya no aparece en Occurring): "
+                                 f"'{r['nombre_alarma']}' ({r['sn']}) desde {r['hora_alarma']}")
+            resumen["resuelta"] += len(cerradas)
+            purgadas = self.repo.purgar_resueltas()
+            if purgadas:
+                self.logger.info(f"Historial: {purgadas} alarma(s) resuelta(s) antiguas eliminadas.")
+        except Exception as e:
+            self.logger.exception(f"No se pudo sincronizar la base de datos: {e}")
 
     def _generar_y_enviar_reportes(self, fichas: list[dict]):
         activas = self.repo.obtener_activas()
@@ -110,7 +134,7 @@ class GoodweBot:
             "nombre_planta": alarma.nombre_planta,
             "sn": alarma.sn,
             "equipo": alarma.equipo,
-            "tipo_alarma": alarma.tipo_alarma,
+            "tipo_alarma": traducir_tipo(alarma.tipo_alarma),
             "nivel": alarma.nivel,
             "estado": alarma.estado,
             "hora_alarma": alarma.hora_alarma,

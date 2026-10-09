@@ -1,3 +1,4 @@
+import logging
 from datetime import datetime
 from pathlib import Path
 from xml.sax.saxutils import escape
@@ -12,6 +13,9 @@ from reportlab.platypus import (
 )
 
 from config.settings import settings
+from reports.logo import buscar_logo
+
+log = logging.getLogger(__name__)
 
 
 class PDFReportGenerator:
@@ -34,7 +38,7 @@ class PDFReportGenerator:
         curva_path, clasificacion ('nueva' o 'persistente').
         """
         self.alarmas = self._ordenar(alarmas)
-        self.logo_path = Path(logo_path) if logo_path else settings.base_dir / "assets" / "logo_sunnyapp.png"
+        self.logo_path = buscar_logo(logo_path)   # IMG/sunnyapp.jpg (ver reports/logo.py); None si no existe
         self.fecha = datetime.now()
         self._crear_estilos()
 
@@ -95,17 +99,21 @@ class PDFReportGenerator:
         ancho, alto = letter
         canvas.saveState()
 
-        if self.logo_path.exists():
-            canvas.drawImage(str(self.logo_path), 1.5 * cm, alto - 2.4 * cm, width=1.4 * cm,
-                             height=1.45 * cm, mask="auto", preserveAspectRatio=True)
+        if self.logo_path is not None:
+            try:  # el logo cabe en una caja de 1.9 x 1.9 cm, conservando sus proporciones
+                canvas.drawImage(str(self.logo_path), 1.5 * cm, alto - 2.5 * cm, width=1.9 * cm,
+                                 height=1.9 * cm, mask="auto", preserveAspectRatio=True, anchor="sw")
+            except Exception:  # noqa: BLE001  imagen corrupta: el PDF sale sin logo
+                log.exception("No se pudo dibujar el logo %s", self.logo_path)
+                self.logo_path = None
 
         canvas.setFillColor(self.NARANJA)
         canvas.setFont("Helvetica-Bold", 13)
-        canvas.drawString(3.3 * cm, alto - 1.5 * cm, "SUNNY APP")
+        canvas.drawString(3.7 * cm, alto - 1.5 * cm, "SUNNY APP")
 
         canvas.setFillColor(self.GRIS_OSC)
         canvas.setFont("Helvetica", 9)
-        canvas.drawString(3.3 * cm, alto - 2.0 * cm, "Reporte de alarmas - Plataforma Goodwe")
+        canvas.drawString(3.7 * cm, alto - 2.0 * cm, "Reporte de alarmas - Plataforma Goodwe")
         canvas.drawRightString(ancho - 1.5 * cm, alto - 1.5 * cm, self.fecha.strftime("%d/%m/%Y %H:%M"))
 
         canvas.setStrokeColor(self.NARANJA)
@@ -138,6 +146,7 @@ class PDFReportGenerator:
             ("ALIGN", (0, 0), (-1, -1), "CENTER"),
             ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
             ("FONTSIZE", (0, 0), (-1, 0), 22),
+            ("LEADING", (0, 0), (-1, 0), 28),
             ("TEXTCOLOR", (0, 0), (-1, 0), self.NARANJA),
             ("FONTSIZE", (0, 1), (-1, 1), 9),
             ("TEXTCOLOR", (0, 1), (-1, 1), self.GRIS_OSC),

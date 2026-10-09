@@ -66,7 +66,7 @@ class Settings:
                 # Correo (envío de reportes)
         self.email_from = os.getenv("EMAIL_FROM")
         self.email_app_password = os.getenv("EMAIL_APP_PASSWORD")
-        self.email_to = os.getenv("EMAIL_TO")
+        self.email_to = [e.strip() for e in os.getenv("EMAIL_TO", "").split(",") if e.strip()]
         self.smtp_server = "smtp.gmail.com"
         self.smtp_port = 587
         

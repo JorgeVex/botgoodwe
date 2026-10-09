@@ -2,11 +2,13 @@ import time
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.common.exceptions import TimeoutException
+from selenium.common.exceptions import TimeoutException, StaleElementReferenceException
+from selenium.webdriver import ActionChains
+from scraper.detalle import SEL_DRAWER
 
 from config.settings import settings
 from database.models import Alarma
-from scraper.alarm_translations import traducir_alarma
+from scraper.alarm_translations import traducir_alarma, traducir_texto
 from scraper.detalle import DetalleAlarmaMixin
 
 
@@ -73,6 +75,48 @@ class GoodweAlarmScraper(DetalleAlarmaMixin):
 
         return alarmas
 
+    def _abrir_detalle_fila(self, fila_index: int) -> bool:
+        """
+        Abre el drawer de detalle de la fila `fila_index` (1-based). El elemento que responde
+        al clic suele ser el enlace/texto DENTRO de la celda, no el <td>; por eso se prueban,
+        en orden: el elemento interno con el texto del nombre (clic real y luego JS), y por
+        último la celda. Después de cada intento se verifica que el drawer realmente abrió.
+        """
+        xp_celda = f"{self._xpath_tabla_body()}/table/tbody/tr[{fila_index}]/td[1]"
+        for _ in range(2):  # una repetición completa si la tabla se refrescó (stale)
+            try:
+                celda = self.wait.until(EC.presence_of_element_located((By.XPATH, xp_celda)))
+                self.driver.execute_script("arguments[0].scrollIntoView({block:'center'});", celda)
+                time.sleep(0.5)
+                internos = celda.find_elements(
+                    By.XPATH, ".//a | .//*[normalize-space(text())!='' and not(*)]")
+                candidatos = list(reversed(internos)) + [celda]   # el más profundo primero
+                for el in candidatos:
+                    for modo in ("real", "js"):
+                        try:
+                            if modo == "real":
+                                ActionChains(self.driver).move_to_element(el).pause(0.3).click().perform()
+                            else:
+                                self.driver.execute_script("arguments[0].click();", el)
+                        except Exception:  # noqa: BLE001
+                            continue
+                        if self._drawer_abierto_en(5):
+                            return True
+            except (StaleElementReferenceException, TimeoutException):
+                time.sleep(1.5)
+        return False
+
+    def _drawer_abierto_en(self, segundos: float) -> bool:
+        fin = time.time() + segundos
+        while time.time() < fin:
+            try:
+                if any(e.is_displayed() for e in self.driver.find_elements(By.CSS_SELECTOR, SEL_DRAWER)):
+                    return True
+            except StaleElementReferenceException:
+                pass
+            time.sleep(0.4)
+        return False
+
     def completar_detalle_y_curva(self, alarma: Alarma, fila_index: int) -> Alarma:
         """
         Hace clic en el nombre de la alarma (columna 'Alarm Name') de una fila específica,
@@ -82,19 +126,16 @@ class GoodweAlarmScraper(DetalleAlarmaMixin):
         fila_index: posición de la fila en la tabla actual (1-based).
         """
         try:
-            celda_nombre = self.wait.until(
-                EC.element_to_be_clickable(
-                    (By.XPATH, f"{self._xpath_tabla_body()}/table/tbody/tr[{fila_index}]/td[1]")
-                )
-            )
-            self.driver.execute_script("arguments[0].click();", celda_nombre)
+            if not self._abrir_detalle_fila(fila_index):
+                raise TimeoutException(f"No se abrió el detalle de la fila {fila_index}")
 
             # Nombre de archivo de la curva: mismo formato que antes
             id_archivo = f"curva_{alarma.sn}_{alarma.hora_alarma}"
             detalle = self.extraer_detalle(id_archivo)
 
-            alarma.razon = detalle["razon"] or None
-            alarma.sugerencia = detalle["sugerencia"] or None
+            # Razón y sugerencia llegan en inglés desde Goodwe: se traducen para el reporte
+            alarma.razon = traducir_texto(detalle["razon"]) or None
+            alarma.sugerencia = traducir_texto(detalle["sugerencia"]) or None
             alarma.ruta_curva = detalle["curva_path"]
 
         except TimeoutException:

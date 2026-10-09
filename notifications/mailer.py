@@ -27,10 +27,16 @@ class ReportMailer:
 
     def enviar_reporte(self, asunto: str, cuerpo: str, adjuntos: list[str] = None):
         """Envía un correo con los reportes indicados como archivos adjuntos."""
+        # EMAIL_TO puede traer varios correos separados por coma
+        bruto = settings.email_to
+        if isinstance(bruto, str):
+            bruto = bruto.split(",")
+        destinatarios = [e.strip() for e in bruto if e.strip()]
+
         msg = EmailMessage()
         msg["Subject"] = asunto
         msg["From"] = settings.email_from
-        msg["To"] = settings.email_to
+        msg["To"] = ", ".join(destinatarios)
         msg.set_content(cuerpo)
 
         for ruta_str in (adjuntos or []):
@@ -39,7 +45,7 @@ class ReportMailer:
         with smtplib.SMTP(settings.smtp_server, settings.smtp_port) as server:
             server.starttls()
             server.login(settings.email_from, settings.email_app_password)
-            server.send_message(msg)
+            server.send_message(msg, to_addrs=destinatarios)
 
     def _adjuntar_archivo(self, msg: EmailMessage, ruta: Path):
         if not ruta.exists():

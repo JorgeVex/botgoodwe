@@ -93,13 +93,85 @@ class AlarmaRepository:
                 """, (ahora, alarma.duracion, existente["id"]))
                 return "persistente"
 
+            if existente["estado"] == "Restaurado" and alarma.estado == "Ocurriendo":
+                # Estaba cerrada (por sincronización o porque se restauró) pero la plataforma
+                # la sigue mostrando como activa con la misma hora de inicio: se reabre.
+                conn.execute("""
+                    UPDATE alarmas
+                    SET estado='Ocurriendo', fecha_resolucion=NULL, ultima_deteccion=?, duracion=?
+                    WHERE id=?
+                """, (ahora, alarma.duracion, existente["id"]))
+                return "persistente"
+
             return "sin_cambios"
 
-    def obtener_activas(self) -> List[sqlite3.Row]:
+    def sincronizar_activas(self, alarmas_vigentes: List[Alarma]) -> List[sqlite3.Row]:
+        """
+        Cierra las alarmas que la base de datos tiene como 'Ocurriendo' pero que YA NO aparecen
+        en la pestaña Occurring de la plataforma (Goodwe a veces las saca sin marcarlas
+        'Restaurado'). No se borran: pasan a 'Restaurado' con fecha_resolucion, para conservar
+        el historial. Devuelve las filas que se cerraron.
+
+        IMPORTANTE: llamar solo tras una lectura exitosa de la tabla (ver main.py).
+        """
+        vigentes = {(a.sn, a.nombre_alarma, a.hora_alarma)
+                    for a in alarmas_vigentes if a.estado == "Ocurriendo"}
+        ahora = datetime.now().isoformat(timespec="seconds")
+
         with self.db.conectar() as conn:
-            return conn.execute(
-                "SELECT * FROM alarmas WHERE estado='Ocurriendo' ORDER BY ultima_deteccion DESC"
-            ).fetchall()
+            activas = conn.execute("SELECT * FROM alarmas WHERE estado='Ocurriendo'").fetchall()
+            cerradas = [r for r in activas
+                        if (r["sn"], r["nombre_alarma"], r["hora_alarma"]) not in vigentes]
+            for r in cerradas:
+                conn.execute(
+                    "UPDATE alarmas SET estado='Restaurado', fecha_resolucion=?, ultima_deteccion=? WHERE id=?",
+                    (ahora, ahora, r["id"]),
+                )
+        return cerradas
+
+    def purgar_resueltas(self, dias: int = None) -> int:
+        """Borra del historial las alarmas resueltas hace más de `dias` días. Devuelve cuántas."""
+        dias = dias or getattr(settings, "dias_retencion_resueltas", 90)
+        with self.db.conectar() as conn:
+            cur = conn.execute("""
+                DELETE FROM alarmas
+                WHERE estado='Restaurado'
+                  AND fecha_resolucion IS NOT NULL
+                  AND julianday('now', 'localtime') - julianday(fecha_resolucion) > ?
+            """, (dias,))
+            return cur.rowcount
+
+    def actualizar_detalle(self, alarma: Alarma) -> None:
+        """
+        Guarda razón y sugerencia (ya traducidas) de una alarma. Hay que llamarlo DESPUÉS de
+        scraper.completar_detalle_y_curva(), porque procesar_lectura() se ejecuta antes de
+        abrir el detalle y por eso la base de datos las guardaba vacías.
+        """
+        with self.db.conectar() as conn:
+            conn.execute("""
+                UPDATE alarmas
+                SET razon=COALESCE(?, razon), sugerencia=COALESCE(?, sugerencia)
+                WHERE sn=? AND nombre_alarma=? AND hora_alarma=?
+            """, (alarma.razon, alarma.sugerencia, alarma.sn, alarma.nombre_alarma, alarma.hora_alarma))
+
+    def obtener_activas(self) -> List[sqlite3.Row]:
+        """
+        Alarmas que siguen ocurriendo. Agrega dos columnas calculadas:
+          situacion  -> 'Nueva' si se detectó hoy, 'Persistente' si viene de días anteriores
+          dias_activa -> días desde la primera detección del bot
+        Orden: nuevas primero y, dentro de cada grupo, la más reciente primero.
+        """
+        with self.db.conectar() as conn:
+            return conn.execute("""
+                SELECT *,
+                    CASE WHEN date(primera_deteccion) = date('now', 'localtime')
+                         THEN 'Nueva' ELSE 'Persistente' END AS situacion,
+                    CAST(julianday('now', 'localtime') - julianday(primera_deteccion) AS INTEGER) AS dias_activa
+                FROM alarmas
+                WHERE estado='Ocurriendo'
+                ORDER BY (date(primera_deteccion) = date('now', 'localtime')) DESC,
+                         ultima_deteccion DESC
+            """).fetchall()
 
     def obtener_persistentes(self, dias_minimo: int = None) -> List[sqlite3.Row]:
         dias_minimo = dias_minimo or settings.dias_alarma_cronica
