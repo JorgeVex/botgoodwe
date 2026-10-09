@@ -1,0 +1,786 @@
+2026-09-17 20:02:53,907 [INFO] Iniciando ciclo del bot.
+2026-09-17 20:02:53,916 [INFO] ====== WebDriver manager ======
+2026-09-17 20:02:56,031 [INFO] Get LATEST chromedriver version for google-chrome
+2026-09-17 20:02:56,277 [INFO] There is no [win64] chromedriver "153.0.8010.47" for browser google-chrome "153.0.8010" in cache
+2026-09-17 20:02:57,245 [INFO] There is no [win64] chromedriver "153.0.8010.47" for browser google-chrome "153.0.8010" in cache
+2026-09-17 20:02:57,245 [INFO] Get LATEST chromedriver version for google-chrome
+2026-09-17 20:02:57,735 [INFO] WebDriver version 153.0.8010.47 selected
+2026-09-17 20:02:57,747 [INFO] Modern chrome version https://storage.googleapis.com/chrome-for-testing-public/153.0.8010.47/win64/chromedriver-win64.zip
+2026-09-17 20:02:57,756 [INFO] About to download new driver from https://storage.googleapis.com/chrome-for-testing-public/153.0.8010.47/win64/chromedriver-win64.zip
+2026-09-17 20:02:58,117 [INFO] Driver downloading response is 200
+2026-09-17 20:03:01,894 [INFO] Driver has been saved in cache [C:\Users\Lenovo\.wdm\drivers\chromedriver\win64\153.0.8010.47]
+2026-09-17 20:03:32,787 [ERROR] Error durante el ciclo del bot: Message: 
+Stacktrace:
+	chromedriver!GetHandleVerifier [0x7ff760d6c895+5aa5]
+	chromedriver!(No symbol) [0x7ff760c90570]
+	chromedriver!(No symbol) [0x7ff760ab4a7d]
+	chromedriver!(No symbol) [0x7ff760b1046d]
+	chromedriver!(No symbol) [0x7ff760b1072c]
+	chromedriver!(No symbol) [0x7ff760b63417]
+	chromedriver!(No symbol) [0x7ff760b6008f]
+	chromedriver!(No symbol) [0x7ff760b021e2]
+	chromedriver!(No symbol) [0x7ff760b02ff3]
+	chromedriver!GetHandleVerifier [0x7ff76118b271+424481]
+	chromedriver!GetHandleVerifier [0x7ff7611b6f77+450187]
+	chromedriver!GetHandleVerifier [0x7ff7611aae6e+44407e]
+	chromedriver!GetHandleVerifier [0x7ff760e6798e+100b9e]
+	chromedriver!(No symbol) [0x7ff760c9e2b5]
+	chromedriver!(No symbol) [0x7ff760c99454]
+	chromedriver!(No symbol) [0x7ff760c995e4]
+	chromedriver!(No symbol) [0x7ff760c8438c]
+	KERNEL32!BaseThreadInitThunk [0x7ffe2c1ecd87+17]
+	ntdll!RtlUserThreadStart [0x7ffe2cc8caec+2c]
+Traceback (most recent call last):
+  File "C:\Users\Lenovo\Desktop\goodwe_bot\main.py", line 34, in ejecutar_ciclo
+    driver = self.auth.login()
+  File "C:\Users\Lenovo\Desktop\goodwe_bot\scraper\auth.py", line 102, in login
+    self._completar_credenciales()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Lenovo\Desktop\goodwe_bot\scraper\auth.py", line 67, in _completar_credenciales
+    contenedor_usuario = self.wait.until(
+        EC.presence_of_element_located((By.XPATH, settings.xpaths["icono_alarmas"]))
+    )
+  File "c:\Users\Lenovo\Desktop\goodwe_bot\venv\Lib\site-packages\selenium\webdriver\support\wait.py", line 121, in until
+    raise TimeoutException(message, screen, stacktrace)
+selenium.common.exceptions.TimeoutException: Message: 
+Stacktrace:
+	chromedriver!GetHandleVerifier [0x7ff760d6c895+5aa5]
+	chromedriver!(No symbol) [0x7ff760c90570]
+	chromedriver!(No symbol) [0x7ff760ab4a7d]
+	chromedriver!(No symbol) [0x7ff760b1046d]
+	chromedriver!(No symbol) [0x7ff760b1072c]
+	chromedriver!(No symbol) [0x7ff760b63417]
+	chromedriver!(No symbol) [0x7ff760b6008f]
+	chromedriver!(No symbol) [0x7ff760b021e2]
+	chromedriver!(No symbol) [0x7ff760b02ff3]
+	chromedriver!GetHandleVerifier [0x7ff76118b271+424481]
+	chromedriver!GetHandleVerifier [0x7ff7611b6f77+450187]
+	chromedriver!GetHandleVerifier [0x7ff7611aae6e+44407e]
+	chromedriver!GetHandleVerifier [0x7ff760e6798e+100b9e]
+	chromedriver!(No symbol) [0x7ff760c9e2b5]
+	chromedriver!(No symbol) [0x7ff760c99454]
+	chromedriver!(No symbol) [0x7ff760c995e4]
+	chromedriver!(No symbol) [0x7ff760c8438c]
+	KERNEL32!BaseThreadInitThunk [0x7ffe2c1ecd87+17]
+	ntdll!RtlUserThreadStart [0x7ffe2cc8caec+2c]
+
+2026-09-17 20:03:35,136 [INFO] Ciclo finalizado. Navegador cerrado.
+2026-09-17 20:06:21,408 [INFO] Iniciando ciclo del bot.
+2026-09-17 20:06:21,416 [INFO] ====== WebDriver manager ======
+2026-09-17 20:06:22,761 [INFO] Driver [C:\Users\Lenovo\.wdm\drivers\chromedriver\win64\153.0.8010.47\chromedriver-win64/chromedriver.exe] found in cache by browser version
+2026-09-17 20:06:53,234 [ERROR] Error durante el ciclo del bot: Message: 
+Stacktrace:
+	chromedriver!GetHandleVerifier [0x7ff760d6c895+5aa5]
+	chromedriver!(No symbol) [0x7ff760c90570]
+	chromedriver!(No symbol) [0x7ff760ab4a7d]
+	chromedriver!(No symbol) [0x7ff760b1046d]
+	chromedriver!(No symbol) [0x7ff760b1072c]
+	chromedriver!(No symbol) [0x7ff760b63417]
+	chromedriver!(No symbol) [0x7ff760b6008f]
+	chromedriver!(No symbol) [0x7ff760b021e2]
+	chromedriver!(No symbol) [0x7ff760b02ff3]
+	chromedriver!GetHandleVerifier [0x7ff76118b271+424481]
+	chromedriver!GetHandleVerifier [0x7ff7611b6f77+450187]
+	chromedriver!GetHandleVerifier [0x7ff7611aae6e+44407e]
+	chromedriver!GetHandleVerifier [0x7ff760e6798e+100b9e]
+	chromedriver!(No symbol) [0x7ff760c9e2b5]
+	chromedriver!(No symbol) [0x7ff760c99454]
+	chromedriver!(No symbol) [0x7ff760c995e4]
+	chromedriver!(No symbol) [0x7ff760c8438c]
+	KERNEL32!BaseThreadInitThunk [0x7ffe2c1ecd87+17]
+	ntdll!RtlUserThreadStart [0x7ffe2cc8caec+2c]
+Traceback (most recent call last):
+  File "c:\Users\Lenovo\Desktop\goodwe_bot\main.py", line 34, in ejecutar_ciclo
+    driver = self.auth.login()
+  File "c:\Users\Lenovo\Desktop\goodwe_bot\scraper\auth.py", line 102, in login
+    self._completar_credenciales()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "c:\Users\Lenovo\Desktop\goodwe_bot\scraper\auth.py", line 67, in _completar_credenciales
+    contenedor_usuario = self.wait.until(
+        EC.presence_of_element_located((By.XPATH, settings.xpaths["icono_alarmas"]))
+    )
+  File "C:\Users\Lenovo\Desktop\goodwe_bot\venv\Lib\site-packages\selenium\webdriver\support\wait.py", line 121, in until
+    raise TimeoutException(message, screen, stacktrace)
+selenium.common.exceptions.TimeoutException: Message: 
+Stacktrace:
+	chromedriver!GetHandleVerifier [0x7ff760d6c895+5aa5]
+	chromedriver!(No symbol) [0x7ff760c90570]
+	chromedriver!(No symbol) [0x7ff760ab4a7d]
+	chromedriver!(No symbol) [0x7ff760b1046d]
+	chromedriver!(No symbol) [0x7ff760b1072c]
+	chromedriver!(No symbol) [0x7ff760b63417]
+	chromedriver!(No symbol) [0x7ff760b6008f]
+	chromedriver!(No symbol) [0x7ff760b021e2]
+	chromedriver!(No symbol) [0x7ff760b02ff3]
+	chromedriver!GetHandleVerifier [0x7ff76118b271+424481]
+	chromedriver!GetHandleVerifier [0x7ff7611b6f77+450187]
+	chromedriver!GetHandleVerifier [0x7ff7611aae6e+44407e]
+	chromedriver!GetHandleVerifier [0x7ff760e6798e+100b9e]
+	chromedriver!(No symbol) [0x7ff760c9e2b5]
+	chromedriver!(No symbol) [0x7ff760c99454]
+	chromedriver!(No symbol) [0x7ff760c995e4]
+	chromedriver!(No symbol) [0x7ff760c8438c]
+	KERNEL32!BaseThreadInitThunk [0x7ffe2c1ecd87+17]
+	ntdll!RtlUserThreadStart [0x7ffe2cc8caec+2c]
+
+2026-09-17 20:06:55,694 [INFO] Ciclo finalizado. Navegador cerrado.
+2026-09-17 20:08:25,484 [INFO] Iniciando ciclo del bot.
+2026-09-17 20:08:25,489 [INFO] ====== WebDriver manager ======
+2026-09-17 20:08:26,444 [INFO] Driver [C:\Users\Lenovo\.wdm\drivers\chromedriver\win64\153.0.8010.47\chromedriver-win64/chromedriver.exe] found in cache by browser version
+2026-09-17 20:08:48,841 [ERROR] Error durante el ciclo del bot: Message: invalid session id: session deleted as the browser has closed the connection
+from disconnected: not connected to DevTools
+  (Session info: chrome=153.0.8010.48); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+	chromedriver!GetHandleVerifier [0x7ff760d6c895+5aa5]
+	chromedriver!(No symbol) [0x7ff760c90570]
+	chromedriver!(No symbol) [0x7ff760ab4a7d]
+	chromedriver!(No symbol) [0x7ff760aa0412]
+	chromedriver!(No symbol) [0x7ff760ac6106]
+	chromedriver!(No symbol) [0x7ff760b41210]
+	chromedriver!(No symbol) [0x7ff760b5f95d]
+	chromedriver!(No symbol) [0x7ff760b021e2]
+	chromedriver!(No symbol) [0x7ff760b02ff3]
+	chromedriver!GetHandleVerifier [0x7ff76118b271+424481]
+	chromedriver!GetHandleVerifier [0x7ff7611b6f77+450187]
+	chromedriver!GetHandleVerifier [0x7ff7611aae6e+44407e]
+	chromedriver!GetHandleVerifier [0x7ff760e6798e+100b9e]
+	chromedriver!(No symbol) [0x7ff760c9e2b5]
+	chromedriver!(No symbol) [0x7ff760c99454]
+	chromedriver!(No symbol) [0x7ff760c995e4]
+	chromedriver!(No symbol) [0x7ff760c8438c]
+	KERNEL32!BaseThreadInitThunk [0x7ffe2c1ecd87+17]
+	ntdll!RtlUserThreadStart [0x7ffe2cc8caec+2c]
+Traceback (most recent call last):
+  File "c:\Users\Lenovo\Desktop\goodwe_bot\main.py", line 34, in ejecutar_ciclo
+    driver = self.auth.login()
+  File "c:\Users\Lenovo\Desktop\goodwe_bot\scraper\auth.py", line 102, in login
+    self._completar_credenciales()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "c:\Users\Lenovo\Desktop\goodwe_bot\scraper\auth.py", line 67, in _completar_credenciales
+    contenedor_usuario = self.wait.until(
+        EC.presence_of_element_located((By.XPATH, settings.xpaths["icono_alarmas"]))
+    )
+  File "C:\Users\Lenovo\Desktop\goodwe_bot\venv\Lib\site-packages\selenium\webdriver\support\wait.py", line 112, in until
+    value = method(self._driver)
+  File "C:\Users\Lenovo\Desktop\goodwe_bot\venv\Lib\site-packages\selenium\webdriver\support\expected_conditions.py", line 96, in _predicate
+    return driver.find_element(*locator)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "C:\Users\Lenovo\Desktop\goodwe_bot\venv\Lib\site-packages\selenium\webdriver\remote\webdriver.py", line 913, in find_element
+    return self.execute(Command.FIND_ELEMENT, {"using": by, "value": value})["value"]
+           ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Lenovo\Desktop\goodwe_bot\venv\Lib\site-packages\selenium\webdriver\remote\webdriver.py", line 506, in execute
+    self.error_handler.check_response(response)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "C:\Users\Lenovo\Desktop\goodwe_bot\venv\Lib\site-packages\selenium\webdriver\remote\errorhandler.py", line 232, in check_response
+    raise exception_class(message, screen, stacktrace)
+selenium.common.exceptions.InvalidSessionIdException: Message: invalid session id: session deleted as the browser has closed the connection
+from disconnected: not connected to DevTools
+  (Session info: chrome=153.0.8010.48); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#invalidsessionidexception
+Stacktrace:
+	chromedriver!GetHandleVerifier [0x7ff760d6c895+5aa5]
+	chromedriver!(No symbol) [0x7ff760c90570]
+	chromedriver!(No symbol) [0x7ff760ab4a7d]
+	chromedriver!(No symbol) [0x7ff760aa0412]
+	chromedriver!(No symbol) [0x7ff760ac6106]
+	chromedriver!(No symbol) [0x7ff760b41210]
+	chromedriver!(No symbol) [0x7ff760b5f95d]
+	chromedriver!(No symbol) [0x7ff760b021e2]
+	chromedriver!(No symbol) [0x7ff760b02ff3]
+	chromedriver!GetHandleVerifier [0x7ff76118b271+424481]
+	chromedriver!GetHandleVerifier [0x7ff7611b6f77+450187]
+	chromedriver!GetHandleVerifier [0x7ff7611aae6e+44407e]
+	chromedriver!GetHandleVerifier [0x7ff760e6798e+100b9e]
+	chromedriver!(No symbol) [0x7ff760c9e2b5]
+	chromedriver!(No symbol) [0x7ff760c99454]
+	chromedriver!(No symbol) [0x7ff760c995e4]
+	chromedriver!(No symbol) [0x7ff760c8438c]
+	KERNEL32!BaseThreadInitThunk [0x7ffe2c1ecd87+17]
+	ntdll!RtlUserThreadStart [0x7ffe2cc8caec+2c]
+
+2026-09-17 20:08:51,015 [INFO] Ciclo finalizado. Navegador cerrado.
+2026-09-17 20:14:28,576 [INFO] Iniciando ciclo del bot.
+2026-09-17 20:14:28,583 [INFO] ====== WebDriver manager ======
+2026-09-17 20:14:29,569 [INFO] Driver [C:\Users\Lenovo\.wdm\drivers\chromedriver\win64\153.0.8010.47\chromedriver-win64/chromedriver.exe] found in cache by browser version
+2026-09-17 20:14:34,238 [ERROR] Error durante el ciclo del bot: 'NoneType' object is not iterable
+Traceback (most recent call last):
+  File "c:\Users\Lenovo\Desktop\goodwe_bot\main.py", line 34, in ejecutar_ciclo
+    driver = self.auth.login()
+  File "c:\Users\Lenovo\Desktop\goodwe_bot\scraper\auth.py", line 86, in login
+    self._completar_credenciales()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "c:\Users\Lenovo\Desktop\goodwe_bot\scraper\auth.py", line 49, in _completar_credenciales
+    campo_usuario.send_keys(settings.goodwe_user)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Lenovo\Desktop\goodwe_bot\venv\Lib\site-packages\selenium\webdriver\remote\webelement.py", line 273, in send_keys
+    Command.SEND_KEYS_TO_ELEMENT, {"text": "".join(keys_to_typing(value)), "value": keys_to_typing(value)}
+                                                   ~~~~~~~~~~~~~~^^^^^^^
+  File "C:\Users\Lenovo\Desktop\goodwe_bot\venv\Lib\site-packages\selenium\webdriver\common\utils.py", line 182, in keys_to_typing
+    characters.extend(val)
+    ~~~~~~~~~~~~~~~~~^^^^^
+TypeError: 'NoneType' object is not iterable
+2026-09-17 20:14:36,473 [INFO] Ciclo finalizado. Navegador cerrado.
+2026-09-17 20:15:59,386 [INFO] Iniciando ciclo del bot.
+2026-09-17 20:15:59,390 [INFO] ====== WebDriver manager ======
+2026-09-17 20:16:00,325 [INFO] Driver [C:\Users\Lenovo\.wdm\drivers\chromedriver\win64\153.0.8010.47\chromedriver-win64/chromedriver.exe] found in cache by browser version
+2026-09-17 20:16:09,046 [INFO] Login exitoso en Goodwe.
+2026-09-17 20:16:12,494 [INFO] Se leyeron 15 alarmas de la plataforma.
+2026-09-17 20:18:53,268 [INFO] Iniciando ciclo del bot.
+2026-09-17 20:18:53,275 [INFO] ====== WebDriver manager ======
+2026-09-17 20:18:54,600 [INFO] Driver [C:\Users\Lenovo\.wdm\drivers\chromedriver\win64\153.0.8010.47\chromedriver-win64/chromedriver.exe] found in cache by browser version
+2026-09-17 20:19:13,841 [INFO] Login exitoso en Goodwe.
+2026-09-17 20:19:31,261 [ERROR] Error durante el ciclo del bot: Message: 
+Traceback (most recent call last):
+  File "c:\Users\Lenovo\Desktop\goodwe_bot\main.py", line 39, in ejecutar_ciclo
+    alarmas = scraper.listar_alarmas_activas()
+  File "c:\Users\Lenovo\Desktop\goodwe_bot\scraper\alarms.py", line 32, in listar_alarmas_activas
+    filas = self.wait.until(
+        EC.presence_of_all_elements_located(
+            (By.XPATH, "//table//tbody/tr")
+        )
+    )
+  File "C:\Users\Lenovo\Desktop\goodwe_bot\venv\Lib\site-packages\selenium\webdriver\support\wait.py", line 121, in until
+    raise TimeoutException(message, screen, stacktrace)
+selenium.common.exceptions.TimeoutException: Message: 
+
+2026-09-17 20:19:33,641 [INFO] Ciclo finalizado. Navegador cerrado.
+2026-09-17 20:20:05,527 [INFO] Iniciando ciclo del bot.
+2026-09-17 20:20:05,537 [INFO] ====== WebDriver manager ======
+2026-09-17 20:20:06,645 [INFO] Driver [C:\Users\Lenovo\.wdm\drivers\chromedriver\win64\153.0.8010.47\chromedriver-win64/chromedriver.exe] found in cache by browser version
+2026-09-17 20:20:19,662 [INFO] Login exitoso en Goodwe.
+2026-09-17 20:20:23,034 [INFO] Se leyeron 1 alarmas de la plataforma.
+2026-09-17 20:20:38,521 [INFO] Resumen del ciclo: {'nueva': 1, 'persistente': 0, 'resuelta': 0, 'sin_cambios': 0}
+2026-09-17 20:20:38,568 [INFO] Reporte Excel generado: C:\Users\Lenovo\Desktop\goodwe_bot\reports_output\excel\reporte_diario_20260917.xlsx
+2026-09-17 20:20:41,011 [INFO] Ciclo finalizado. Navegador cerrado.
+2026-09-17 20:54:07,432 [INFO] Iniciando ciclo del bot.
+2026-09-17 20:54:07,437 [INFO] ====== WebDriver manager ======
+2026-09-17 20:54:08,710 [INFO] Driver [C:\Users\Lenovo\.wdm\drivers\chromedriver\win64\153.0.8010.47\chromedriver-win64/chromedriver.exe] found in cache by browser version
+2026-09-17 20:54:22,841 [INFO] Login exitoso en Goodwe.
+2026-09-17 20:54:26,661 [INFO] Se leyeron 15 alarmas de la plataforma.
+2026-09-17 20:54:26,661 [ERROR] Error durante el ciclo del bot: 'GoodweAlarmScraper' object has no attribute 'obtener_detalle'
+Traceback (most recent call last):
+  File "c:\Users\Lenovo\Desktop\goodwe_bot\main.py", line 44, in ejecutar_ciclo
+    detalle = scraper.obtener_detalle(alarma.nombre_planta)
+              ^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'GoodweAlarmScraper' object has no attribute 'obtener_detalle'
+2026-09-17 20:54:29,101 [INFO] Ciclo finalizado. Navegador cerrado.
+2026-09-17 20:55:28,849 [INFO] Iniciando ciclo del bot.
+2026-09-17 20:55:28,854 [INFO] ====== WebDriver manager ======
+2026-09-17 20:55:29,858 [INFO] Driver [C:\Users\Lenovo\.wdm\drivers\chromedriver\win64\153.0.8010.47\chromedriver-win64/chromedriver.exe] found in cache by browser version
+2026-09-17 20:55:43,728 [INFO] Login exitoso en SEMS+.
+2026-09-17 20:55:45,911 [INFO] Se leyeron 1 alarmas de la plataforma.
+2026-09-17 20:56:02,990 [INFO] PDF generado para alarma '' (): C:\Users\Lenovo\Desktop\goodwe_bot\reports_output\pdf\alarma__20260917205602.pdf
+2026-09-17 20:56:02,990 [INFO] Resumen del ciclo: {'nueva': 1, 'persistente': 0, 'resuelta': 0, 'sin_cambios': 0}
+2026-09-17 20:56:03,015 [INFO] Reporte Excel generado: C:\Users\Lenovo\Desktop\goodwe_bot\reports_output\excel\reporte_diario_20260917.xlsx
+2026-09-17 20:56:05,155 [INFO] Reporte enviado por correo a jorgehvelasco05@gmail.com
+2026-09-17 20:56:07,505 [INFO] Ciclo finalizado. Navegador cerrado.
+2026-09-17 20:59:16,006 [INFO] Iniciando ciclo del bot.
+2026-09-17 20:59:16,010 [INFO] ====== WebDriver manager ======
+2026-09-17 20:59:17,162 [INFO] Driver [C:\Users\Lenovo\.wdm\drivers\chromedriver\win64\153.0.8010.47\chromedriver-win64/chromedriver.exe] found in cache by browser version
+2026-09-17 20:59:30,765 [INFO] Login exitoso en SEMS+.
+2026-09-17 20:59:33,337 [INFO] Se leyeron 1 alarmas de la plataforma.
+2026-09-17 20:59:33,338 [INFO] Resumen del ciclo: {'nueva': 0, 'persistente': 0, 'resuelta': 0, 'sin_cambios': 1}
+2026-09-17 20:59:33,338 [INFO] Sin novedades. No se generan reportes en este ciclo.
+2026-09-17 20:59:35,654 [INFO] Ciclo finalizado. Navegador cerrado.
+2026-09-17 21:00:09,666 [INFO] Iniciando ciclo del bot.
+2026-09-17 21:00:09,670 [INFO] ====== WebDriver manager ======
+2026-09-17 21:00:10,621 [INFO] Driver [C:\Users\Lenovo\.wdm\drivers\chromedriver\win64\153.0.8010.47\chromedriver-win64/chromedriver.exe] found in cache by browser version
+2026-09-17 21:00:23,807 [INFO] Login exitoso en SEMS+.
+2026-09-17 21:00:27,619 [INFO] Se leyeron 15 alarmas de la plataforma.
+2026-09-17 21:00:45,145 [INFO] PDF generado para alarma 'CT Loss' (54200DSC251S0107): C:\Users\Lenovo\Desktop\goodwe_bot\reports_output\pdf\alarma_54200DSC251S0107_20260917210045.pdf
+2026-09-17 21:01:02,544 [INFO] PDF generado para alarma 'Grid Voltage Out of Range' (5012KMTM243W0020): C:\Users\Lenovo\Desktop\goodwe_bot\reports_output\pdf\alarma_5012KMTM243W0020_20260917210102.pdf
+2026-09-17 21:01:19,924 [INFO] PDF generado para alarma 'Grid Outage' (5012KMTM243W0020): C:\Users\Lenovo\Desktop\goodwe_bot\reports_output\pdf\alarma_5012KMTM243W0020_20260917210119.pdf
+2026-09-17 21:01:32,277 [ERROR] Error durante el ciclo del bot: Message: no such window: target window already closed
+from unknown error: web view not found
+  (Session info: chrome=153.0.8010.48)
+Stacktrace:
+	chromedriver!GetHandleVerifier [0x7ff729f1c895+5aa5]
+	chromedriver!(No symbol) [0x7ff729e40570]
+	chromedriver!(No symbol) [0x7ff729c64a7d]
+	chromedriver!(No symbol) [0x7ff729c3bab2]
+	chromedriver!(No symbol) [0x7ff729cf0fb6]
+	chromedriver!(No symbol) [0x7ff729d0f95d]
+	chromedriver!(No symbol) [0x7ff729cb21e2]
+	chromedriver!(No symbol) [0x7ff729cb2ff3]
+	chromedriver!GetHandleVerifier [0x7ff72a33b271+424481]
+	chromedriver!GetHandleVerifier [0x7ff72a366f77+450187]
+	chromedriver!GetHandleVerifier [0x7ff72a35ae6e+44407e]
+	chromedriver!GetHandleVerifier [0x7ff72a01798e+100b9e]
+	chromedriver!(No symbol) [0x7ff729e4e2b5]
+	chromedriver!(No symbol) [0x7ff729e49454]
+	chromedriver!(No symbol) [0x7ff729e495e4]
+	chromedriver!(No symbol) [0x7ff729e3438c]
+	KERNEL32!BaseThreadInitThunk [0x7ffe2c1ecd87+17]
+	ntdll!RtlUserThreadStart [0x7ffe2cc8caec+2c]
+Traceback (most recent call last):
+  File "c:\Users\Lenovo\Desktop\goodwe_bot\scraper\alarms.py", line 82, in completar_detalle_y_curva
+    panel = self.wait.until(
+        EC.presence_of_element_located((By.XPATH, settings.xpaths["panel_detalle_alarma"]))
+    )
+  File "C:\Users\Lenovo\Desktop\goodwe_bot\venv\Lib\site-packages\selenium\webdriver\support\wait.py", line 112, in until
+    value = method(self._driver)
+  File "C:\Users\Lenovo\Desktop\goodwe_bot\venv\Lib\site-packages\selenium\webdriver\support\expected_conditions.py", line 96, in _predicate
+    return driver.find_element(*locator)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "C:\Users\Lenovo\Desktop\goodwe_bot\venv\Lib\site-packages\selenium\webdriver\remote\webdriver.py", line 913, in find_element
+    return self.execute(Command.FIND_ELEMENT, {"using": by, "value": value})["value"]
+           ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Lenovo\Desktop\goodwe_bot\venv\Lib\site-packages\selenium\webdriver\remote\webdriver.py", line 506, in execute
+    self.error_handler.check_response(response)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "C:\Users\Lenovo\Desktop\goodwe_bot\venv\Lib\site-packages\selenium\webdriver\remote\errorhandler.py", line 232, in check_response
+    raise exception_class(message, screen, stacktrace)
+selenium.common.exceptions.NoSuchWindowException: Message: no such window: target window already closed
+from unknown error: web view not found
+  (Session info: chrome=153.0.8010.48)
+Stacktrace:
+	chromedriver!GetHandleVerifier [0x7ff729f1c895+5aa5]
+	chromedriver!(No symbol) [0x7ff729e40570]
+	chromedriver!(No symbol) [0x7ff729c64a7d]
+	chromedriver!(No symbol) [0x7ff729c3bab2]
+	chromedriver!(No symbol) [0x7ff729cf0fb6]
+	chromedriver!(No symbol) [0x7ff729d0f95d]
+	chromedriver!(No symbol) [0x7ff729cb21e2]
+	chromedriver!(No symbol) [0x7ff729cb2ff3]
+	chromedriver!GetHandleVerifier [0x7ff72a33b271+424481]
+	chromedriver!GetHandleVerifier [0x7ff72a366f77+450187]
+	chromedriver!GetHandleVerifier [0x7ff72a35ae6e+44407e]
+	chromedriver!GetHandleVerifier [0x7ff72a01798e+100b9e]
+	chromedriver!(No symbol) [0x7ff729e4e2b5]
+	chromedriver!(No symbol) [0x7ff729e49454]
+	chromedriver!(No symbol) [0x7ff729e495e4]
+	chromedriver!(No symbol) [0x7ff729e3438c]
+	KERNEL32!BaseThreadInitThunk [0x7ffe2c1ecd87+17]
+	ntdll!RtlUserThreadStart [0x7ffe2cc8caec+2c]
+
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "c:\Users\Lenovo\Desktop\goodwe_bot\main.py", line 51, in ejecutar_ciclo
+    alarma = scraper.completar_detalle_y_curva(alarma, fila_index)
+  File "c:\Users\Lenovo\Desktop\goodwe_bot\scraper\alarms.py", line 96, in completar_detalle_y_curva
+    self.abrir_centro_alarmas()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "c:\Users\Lenovo\Desktop\goodwe_bot\scraper\alarms.py", line 21, in abrir_centro_alarmas
+    icono = self.wait.until(
+        EC.element_to_be_clickable((By.XPATH, settings.xpaths["icono_alarmas"]))
+    )
+  File "C:\Users\Lenovo\Desktop\goodwe_bot\venv\Lib\site-packages\selenium\webdriver\support\wait.py", line 112, in until
+    value = method(self._driver)
+  File "C:\Users\Lenovo\Desktop\goodwe_bot\venv\Lib\site-packages\selenium\webdriver\support\expected_conditions.py", line 518, in _predicate
+    target = driver.find_element(*target)  # grab element at locator
+  File "C:\Users\Lenovo\Desktop\goodwe_bot\venv\Lib\site-packages\selenium\webdriver\remote\webdriver.py", line 913, in find_element
+    return self.execute(Command.FIND_ELEMENT, {"using": by, "value": value})["value"]
+           ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Lenovo\Desktop\goodwe_bot\venv\Lib\site-packages\selenium\webdriver\remote\webdriver.py", line 506, in execute
+    self.error_handler.check_response(response)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "C:\Users\Lenovo\Desktop\goodwe_bot\venv\Lib\site-packages\selenium\webdriver\remote\errorhandler.py", line 232, in check_response
+    raise exception_class(message, screen, stacktrace)
+selenium.common.exceptions.NoSuchWindowException: Message: no such window: target window already closed
+from unknown error: web view not found
+  (Session info: chrome=153.0.8010.48)
+Stacktrace:
+	chromedriver!GetHandleVerifier [0x7ff729f1c895+5aa5]
+	chromedriver!(No symbol) [0x7ff729e40570]
+	chromedriver!(No symbol) [0x7ff729c64a7d]
+	chromedriver!(No symbol) [0x7ff729c3bab2]
+	chromedriver!(No symbol) [0x7ff729cf0fb6]
+	chromedriver!(No symbol) [0x7ff729d0f95d]
+	chromedriver!(No symbol) [0x7ff729cb21e2]
+	chromedriver!(No symbol) [0x7ff729cb2ff3]
+	chromedriver!GetHandleVerifier [0x7ff72a33b271+424481]
+	chromedriver!GetHandleVerifier [0x7ff72a366f77+450187]
+	chromedriver!GetHandleVerifier [0x7ff72a35ae6e+44407e]
+	chromedriver!GetHandleVerifier [0x7ff72a01798e+100b9e]
+	chromedriver!(No symbol) [0x7ff729e4e2b5]
+	chromedriver!(No symbol) [0x7ff729e49454]
+	chromedriver!(No symbol) [0x7ff729e495e4]
+	chromedriver!(No symbol) [0x7ff729e3438c]
+	KERNEL32!BaseThreadInitThunk [0x7ffe2c1ecd87+17]
+	ntdll!RtlUserThreadStart [0x7ffe2cc8caec+2c]
+
+2026-09-17 21:01:34,569 [INFO] Ciclo finalizado. Navegador cerrado.
+2026-09-17 21:21:49,607 [INFO] Iniciando ciclo del bot.
+2026-09-17 21:21:49,612 [INFO] ====== WebDriver manager ======
+2026-09-17 21:21:50,810 [INFO] Driver [C:\Users\Lenovo\.wdm\drivers\chromedriver\win64\153.0.8010.47\chromedriver-win64/chromedriver.exe] found in cache by browser version
+2026-09-17 21:22:04,007 [INFO] Login exitoso en SEMS+.
+2026-09-17 21:22:07,758 [INFO] Se leyeron 15 alarmas de la plataforma.
+2026-09-17 21:22:25,149 [INFO] PDF generado para alarma 'CT Loss' (54200DSC251S0107): C:\Users\Lenovo\Desktop\goodwe_bot\reports_output\pdf\alarma_54200DSC251S0107_20260917212225.pdf
+2026-09-17 21:22:42,597 [INFO] PDF generado para alarma 'Grid Voltage Out of Range' (5012KMTM243W0020): C:\Users\Lenovo\Desktop\goodwe_bot\reports_output\pdf\alarma_5012KMTM243W0020_20260917212242.pdf
+2026-09-17 21:22:47,860 [INFO] PDF generado para alarma 'Grid Outage' (5012KMTM243W0020): C:\Users\Lenovo\Desktop\goodwe_bot\reports_output\pdf\alarma_5012KMTM243W0020_20260917212247.pdf
+2026-09-17 21:22:51,266 [INFO] PDF generado para alarma 'Grid Frequency Out of Range' (5012KMTM243W0020): C:\Users\Lenovo\Desktop\goodwe_bot\reports_output\pdf\alarma_5012KMTM243W0020_20260917212251.pdf
+2026-09-17 21:22:54,545 [INFO] PDF generado para alarma 'Grid Frequency Out of Range' (5035KMTP251W0008): C:\Users\Lenovo\Desktop\goodwe_bot\reports_output\pdf\alarma_5035KMTP251W0008_20260917212254.pdf
+2026-09-17 21:22:57,822 [INFO] PDF generado para alarma 'Grid Outage' (5035KMTP251W0008): C:\Users\Lenovo\Desktop\goodwe_bot\reports_output\pdf\alarma_5035KMTP251W0008_20260917212257.pdf
+2026-09-17 21:23:01,111 [INFO] PDF generado para alarma 'Grid Voltage Out of Range' (5035KMTP251W0008): C:\Users\Lenovo\Desktop\goodwe_bot\reports_output\pdf\alarma_5035KMTP251W0008_20260917212301.pdf
+2026-09-17 21:23:04,400 [INFO] PDF generado para alarma 'Grid Outage' (5020KMTM251W0006): C:\Users\Lenovo\Desktop\goodwe_bot\reports_output\pdf\alarma_5020KMTM251W0006_20260917212304.pdf
+2026-09-17 21:23:07,670 [INFO] PDF generado para alarma 'Grid Frequency Out of Range' (5020KMTM251W0006): C:\Users\Lenovo\Desktop\goodwe_bot\reports_output\pdf\alarma_5020KMTM251W0006_20260917212307.pdf
+2026-09-17 21:23:10,991 [INFO] PDF generado para alarma 'Grid Voltage Out of Range' (5020KMTM251W0006): C:\Users\Lenovo\Desktop\goodwe_bot\reports_output\pdf\alarma_5020KMTM251W0006_20260917212310.pdf
+2026-09-17 21:23:14,266 [INFO] PDF generado para alarma 'PE Loss' (56000NBB262L0047): C:\Users\Lenovo\Desktop\goodwe_bot\reports_output\pdf\alarma_56000NBB262L0047_20260917212314.pdf
+2026-09-17 21:23:16,932 [INFO] PDF generado para alarma 'CT Loss' (56000NBB262L0005): C:\Users\Lenovo\Desktop\goodwe_bot\reports_output\pdf\alarma_56000NBB262L0005_20260917212316.pdf
+2026-09-17 21:23:20,247 [INFO] PDF generado para alarma 'PE Loss' (56000NBB262L0005): C:\Users\Lenovo\Desktop\goodwe_bot\reports_output\pdf\alarma_56000NBB262L0005_20260917212320.pdf
+2026-09-17 21:23:23,398 [INFO] PDF generado para alarma 'PE Loss' (5010KNBN25AL0074): C:\Users\Lenovo\Desktop\goodwe_bot\reports_output\pdf\alarma_5010KNBN25AL0074_20260917212323.pdf
+2026-09-17 21:23:23,398 [INFO] Resumen del ciclo: {'nueva': 10, 'persistente': 4, 'resuelta': 0, 'sin_cambios': 1}
+2026-09-17 21:23:23,454 [INFO] Reporte Excel generado: C:\Users\Lenovo\Desktop\goodwe_bot\reports_output\excel\reporte_diario_20260917.xlsx
+2026-09-17 21:23:25,958 [INFO] Reporte enviado por correo a jorgehvelasco05@gmail.com
+2026-09-17 21:23:28,365 [INFO] Ciclo finalizado. Navegador cerrado.
+2026-10-08 20:00:03,967 [INFO] Iniciando ciclo del bot.
+2026-10-08 20:00:03,974 [INFO] ====== WebDriver manager ======
+2026-10-08 20:00:05,580 [INFO] Get LATEST chromedriver version for google-chrome
+2026-10-08 20:00:06,108 [INFO] There is no [win64] chromedriver "154.0.8037.92" for browser google-chrome "154.0.8037" in cache
+2026-10-08 20:00:06,778 [INFO] There is no [win64] chromedriver "154.0.8037.92" for browser google-chrome "154.0.8037" in cache
+2026-10-08 20:00:06,778 [INFO] Get LATEST chromedriver version for google-chrome
+2026-10-08 20:00:08,151 [INFO] WebDriver version 154.0.8037.92 selected
+2026-10-08 20:00:08,162 [INFO] Modern chrome version https://storage.googleapis.com/chrome-for-testing-public/154.0.8037.92/win64/chromedriver-win64.zip
+2026-10-08 20:00:08,162 [INFO] About to download new driver from https://storage.googleapis.com/chrome-for-testing-public/154.0.8037.92/win64/chromedriver-win64.zip
+2026-10-08 20:00:10,656 [INFO] Driver downloading response is 200
+2026-10-08 20:00:13,398 [INFO] Driver has been saved in cache [C:\Users\Lenovo\.wdm\drivers\chromedriver\win64\154.0.8037.92]
+2026-10-08 20:02:15,309 [ERROR] Error durante el ciclo del bot: HTTPConnectionPool(host='localhost', port=52902): Read timed out. (read timeout=120)
+Traceback (most recent call last):
+  File "C:\Users\Lenovo\Desktop\goodwe_bot\venv\Lib\site-packages\urllib3\connectionpool.py", line 534, in _make_request
+    response = conn.getresponse()
+  File "C:\Users\Lenovo\Desktop\goodwe_bot\venv\Lib\site-packages\urllib3\connection.py", line 571, in getresponse
+    httplib_response = super().getresponse()
+  File "C:\Python314\Lib\http\client.py", line 1459, in getresponse
+    response.begin()
+    ~~~~~~~~~~~~~~^^
+  File "C:\Python314\Lib\http\client.py", line 336, in begin
+    version, status, reason = self._read_status()
+                              ~~~~~~~~~~~~~~~~~^^
+  File "C:\Python314\Lib\http\client.py", line 297, in _read_status
+    line = str(self.fp.readline(_MAXLINE + 1), "iso-8859-1")
+               ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\socket.py", line 729, in readinto
+    return self._sock.recv_into(b)
+           ~~~~~~~~~~~~~~~~~~~~^^^
+TimeoutError: timed out
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "c:\Users\Lenovo\Desktop\goodwe_bot\main.py", line 36, in ejecutar_ciclo
+    driver = self.auth.login()
+  File "c:\Users\Lenovo\Desktop\goodwe_bot\scraper\auth.py", line 101, in login
+    self.driver.get(settings.goodwe_login_url)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Lenovo\Desktop\goodwe_bot\venv\Lib\site-packages\selenium\webdriver\remote\webdriver.py", line 526, in get
+    self.execute(Command.GET, {"url": url})
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Lenovo\Desktop\goodwe_bot\venv\Lib\site-packages\selenium\webdriver\remote\webdriver.py", line 503, in execute
+    response = cast(RemoteConnection, self.command_executor).execute(driver_command, params)
+  File "C:\Users\Lenovo\Desktop\goodwe_bot\venv\Lib\site-packages\selenium\webdriver\remote\remote_connection.py", line 407, in execute
+    return self._request(command_info[0], url, body=data)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Lenovo\Desktop\goodwe_bot\venv\Lib\site-packages\selenium\webdriver\remote\remote_connection.py", line 431, in _request
+    response = self._conn.request(method, url, body=body, headers=headers, timeout=self._client_config.timeout)
+  File "C:\Users\Lenovo\Desktop\goodwe_bot\venv\Lib\site-packages\urllib3\_request_methods.py", line 143, in request
+    return self.request_encode_body(
+           ~~~~~~~~~~~~~~~~~~~~~~~~^
+        method, url, fields=fields, headers=headers, **urlopen_kw
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Lenovo\Desktop\goodwe_bot\venv\Lib\site-packages\urllib3\_request_methods.py", line 278, in request_encode_body
+    return self.urlopen(method, url, **extra_kw)
+           ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Lenovo\Desktop\goodwe_bot\venv\Lib\site-packages\urllib3\poolmanager.py", line 457, in urlopen
+    response = conn.urlopen(method, u.request_uri, **kw)
+  File "C:\Users\Lenovo\Desktop\goodwe_bot\venv\Lib\site-packages\urllib3\connectionpool.py", line 842, in urlopen
+    retries = retries.increment(
+        method, url, error=new_e, _pool=self, _stacktrace=sys.exc_info()[2]
+    )
+  File "C:\Users\Lenovo\Desktop\goodwe_bot\venv\Lib\site-packages\urllib3\util\retry.py", line 498, in increment
+    raise reraise(type(error), error, _stacktrace)
+          ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Lenovo\Desktop\goodwe_bot\venv\Lib\site-packages\urllib3\util\util.py", line 39, in reraise
+    raise value
+  File "C:\Users\Lenovo\Desktop\goodwe_bot\venv\Lib\site-packages\urllib3\connectionpool.py", line 788, in urlopen
+    response = self._make_request(
+        conn,
+    ...<10 lines>...
+        **response_kw,
+    )
+  File "C:\Users\Lenovo\Desktop\goodwe_bot\venv\Lib\site-packages\urllib3\connectionpool.py", line 536, in _make_request
+    self._raise_timeout(err=e, url=url, timeout_value=read_timeout)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Lenovo\Desktop\goodwe_bot\venv\Lib\site-packages\urllib3\connectionpool.py", line 367, in _raise_timeout
+    raise ReadTimeoutError(
+        self, url, f"Read timed out. (read timeout={timeout_value})"
+    ) from err
+urllib3.exceptions.ReadTimeoutError: HTTPConnectionPool(host='localhost', port=52902): Read timed out. (read timeout=120)
+2026-10-08 20:02:51,756 [INFO] Ciclo finalizado. Navegador cerrado.
+2026-10-08 20:02:59,910 [INFO] Iniciando ciclo del bot.
+2026-10-08 20:02:59,916 [INFO] ====== WebDriver manager ======
+2026-10-08 20:03:00,976 [INFO] Driver [C:\Users\Lenovo\.wdm\drivers\chromedriver\win64\154.0.8037.92\chromedriver-win64/chromedriver.exe] found in cache by browser version
+2026-10-08 20:03:49,328 [ERROR] Error durante el ciclo del bot: Message: no such window: target window already closed
+from unknown error: web view not found
+  (Session info: chrome=154.0.8037.99)
+Stacktrace:
+	chromedriver!GetHandleVerifier [0x7ff6e3009d55+5a55]
+	chromedriver!(No symbol) [0x7ff6e2f2f540]
+	chromedriver!(No symbol) [0x7ff6e2d545fd]
+	chromedriver!(No symbol) [0x7ff6e2d2b5d2]
+	chromedriver!(No symbol) [0x7ff6e2de07f6]
+	chromedriver!(No symbol) [0x7ff6e2dff5bd]
+	chromedriver!(No symbol) [0x7ff6e2da1a12]
+	chromedriver!(No symbol) [0x7ff6e2da2823]
+	chromedriver!GetHandleVerifier [0x7ff6e34204b1+41c1b1]
+	chromedriver!GetHandleVerifier [0x7ff6e344e26b+449f6b]
+	chromedriver!GetHandleVerifier [0x7ff6e344274e+43e44e]
+	chromedriver!GetHandleVerifier [0x7ff6e31032fe+feffe]
+	chromedriver!(No symbol) [0x7ff6e2f3cb55]
+	chromedriver!(No symbol) [0x7ff6e2f37f64]
+	chromedriver!(No symbol) [0x7ff6e2f380f4]
+	chromedriver!(No symbol) [0x7ff6e2f22e4c]
+	KERNEL32!BaseThreadInitThunk [0x7ffd9648cdf7+17]
+	ntdll!RtlUserThreadStart [0x7ffd9813ee4c+2c]
+Traceback (most recent call last):
+  File "c:\Users\Lenovo\Desktop\goodwe_bot\main.py", line 36, in ejecutar_ciclo
+    driver = self.auth.login()
+  File "c:\Users\Lenovo\Desktop\goodwe_bot\scraper\auth.py", line 103, in login
+    self._aceptar_cookies()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "c:\Users\Lenovo\Desktop\goodwe_bot\scraper\auth.py", line 46, in _aceptar_cookies
+    boton = WebDriverWait(self.driver, 5).until(
+        EC.element_to_be_clickable((By.XPATH, settings.xpaths["boton_cookies"]))
+    )
+  File "C:\Users\Lenovo\Desktop\goodwe_bot\venv\Lib\site-packages\selenium\webdriver\support\wait.py", line 112, in until
+    value = method(self._driver)
+  File "C:\Users\Lenovo\Desktop\goodwe_bot\venv\Lib\site-packages\selenium\webdriver\support\expected_conditions.py", line 518, in _predicate
+    target = driver.find_element(*target)  # grab element at locator
+  File "C:\Users\Lenovo\Desktop\goodwe_bot\venv\Lib\site-packages\selenium\webdriver\remote\webdriver.py", line 913, in find_element
+    return self.execute(Command.FIND_ELEMENT, {"using": by, "value": value})["value"]
+           ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Lenovo\Desktop\goodwe_bot\venv\Lib\site-packages\selenium\webdriver\remote\webdriver.py", line 506, in execute
+    self.error_handler.check_response(response)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "C:\Users\Lenovo\Desktop\goodwe_bot\venv\Lib\site-packages\selenium\webdriver\remote\errorhandler.py", line 232, in check_response
+    raise exception_class(message, screen, stacktrace)
+selenium.common.exceptions.NoSuchWindowException: Message: no such window: target window already closed
+from unknown error: web view not found
+  (Session info: chrome=154.0.8037.99)
+Stacktrace:
+	chromedriver!GetHandleVerifier [0x7ff6e3009d55+5a55]
+	chromedriver!(No symbol) [0x7ff6e2f2f540]
+	chromedriver!(No symbol) [0x7ff6e2d545fd]
+	chromedriver!(No symbol) [0x7ff6e2d2b5d2]
+	chromedriver!(No symbol) [0x7ff6e2de07f6]
+	chromedriver!(No symbol) [0x7ff6e2dff5bd]
+	chromedriver!(No symbol) [0x7ff6e2da1a12]
+	chromedriver!(No symbol) [0x7ff6e2da2823]
+	chromedriver!GetHandleVerifier [0x7ff6e34204b1+41c1b1]
+	chromedriver!GetHandleVerifier [0x7ff6e344e26b+449f6b]
+	chromedriver!GetHandleVerifier [0x7ff6e344274e+43e44e]
+	chromedriver!GetHandleVerifier [0x7ff6e31032fe+feffe]
+	chromedriver!(No symbol) [0x7ff6e2f3cb55]
+	chromedriver!(No symbol) [0x7ff6e2f37f64]
+	chromedriver!(No symbol) [0x7ff6e2f380f4]
+	chromedriver!(No symbol) [0x7ff6e2f22e4c]
+	KERNEL32!BaseThreadInitThunk [0x7ffd9648cdf7+17]
+	ntdll!RtlUserThreadStart [0x7ffd9813ee4c+2c]
+
+2026-10-08 20:03:51,465 [INFO] Ciclo finalizado. Navegador cerrado.
+2026-10-08 20:04:22,046 [INFO] Iniciando ciclo del bot.
+2026-10-08 20:04:22,054 [INFO] ====== WebDriver manager ======
+2026-10-08 20:04:23,222 [INFO] Driver [C:\Users\Lenovo\.wdm\drivers\chromedriver\win64\154.0.8037.92\chromedriver-win64/chromedriver.exe] found in cache by browser version
+2026-10-08 20:04:42,816 [INFO] Login exitoso en SEMS+.
+2026-10-08 20:05:02,699 [ERROR] Error durante el ciclo del bot: Message: 
+Traceback (most recent call last):
+  File "c:\Users\Lenovo\Desktop\goodwe_bot\main.py", line 41, in ejecutar_ciclo
+    alarmas = scraper.listar_alarmas_activas()
+  File "c:\Users\Lenovo\Desktop\goodwe_bot\scraper\alarms.py", line 49, in listar_alarmas_activas
+    filas = self._filas_tabla()
+  File "c:\Users\Lenovo\Desktop\goodwe_bot\scraper\alarms.py", line 37, in _filas_tabla
+    return self.wait.until(
+           ~~~~~~~~~~~~~~~^
+        EC.presence_of_all_elements_located(
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+            (By.XPATH, f"{self._xpath_tabla_body()}/table/tbody/tr")
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        )
+        ^
+    )
+    ^
+  File "C:\Users\Lenovo\Desktop\goodwe_bot\venv\Lib\site-packages\selenium\webdriver\support\wait.py", line 121, in until
+    raise TimeoutException(message, screen, stacktrace)
+selenium.common.exceptions.TimeoutException: Message: 
+
+2026-10-08 20:05:05,055 [INFO] Ciclo finalizado. Navegador cerrado.
+2026-10-08 20:05:24,677 [INFO] Iniciando ciclo del bot.
+2026-10-08 20:05:24,685 [INFO] ====== WebDriver manager ======
+2026-10-08 20:05:25,751 [INFO] Driver [C:\Users\Lenovo\.wdm\drivers\chromedriver\win64\154.0.8037.92\chromedriver-win64/chromedriver.exe] found in cache by browser version
+2026-10-08 20:06:15,793 [ERROR] Error durante el ciclo del bot: 'NoneType' object has no attribute 'is_displayed'
+Traceback (most recent call last):
+  File "c:\Users\Lenovo\Desktop\goodwe_bot\main.py", line 36, in ejecutar_ciclo
+    driver = self.auth.login()
+  File "c:\Users\Lenovo\Desktop\goodwe_bot\scraper\auth.py", line 103, in login
+    self._aceptar_cookies()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "c:\Users\Lenovo\Desktop\goodwe_bot\scraper\auth.py", line 46, in _aceptar_cookies
+    boton = WebDriverWait(self.driver, 5).until(
+        EC.element_to_be_clickable((By.XPATH, settings.xpaths["boton_cookies"]))
+    )
+  File "C:\Users\Lenovo\Desktop\goodwe_bot\venv\Lib\site-packages\selenium\webdriver\support\wait.py", line 112, in until
+    value = method(self._driver)
+  File "C:\Users\Lenovo\Desktop\goodwe_bot\venv\Lib\site-packages\selenium\webdriver\support\expected_conditions.py", line 519, in _predicate
+    element = visibility_of(target)(driver)
+  File "C:\Users\Lenovo\Desktop\goodwe_bot\venv\Lib\site-packages\selenium\webdriver\support\expected_conditions.py", line 212, in _predicate
+    return _element_if_visible(element)
+  File "C:\Users\Lenovo\Desktop\goodwe_bot\venv\Lib\site-packages\selenium\webdriver\support\expected_conditions.py", line 227, in _element_if_visible
+    return element if element.is_displayed() == visibility else False
+                      ^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'is_displayed'
+2026-10-08 20:06:18,087 [INFO] Ciclo finalizado. Navegador cerrado.
+2026-10-08 20:11:18,867 [INFO] Iniciando ciclo del bot.
+2026-10-08 20:11:18,872 [INFO] ====== WebDriver manager ======
+2026-10-08 20:11:19,704 [INFO] Driver [C:\Users\Lenovo\.wdm\drivers\chromedriver\win64\154.0.8037.92\chromedriver-win64/chromedriver.exe] found in cache by browser version
+2026-10-08 20:12:01,385 [INFO] Login exitoso en SEMS+.
+2026-10-08 20:12:05,838 [INFO] Se leyeron 8 alarmas de la plataforma.
+2026-10-08 20:12:23,246 [INFO] PDF generado para alarma 'CT Loss' (54200DSC251S0107): C:\Users\Lenovo\Desktop\goodwe_bot\reports_output\pdf\alarma_54200DSC251S0107_20261008201223.pdf
+2026-10-08 20:12:40,650 [INFO] PDF generado para alarma 'Grid Power Outage' (5017KDTR257L0023): C:\Users\Lenovo\Desktop\goodwe_bot\reports_output\pdf\alarma_5017KDTR257L0023_20261008201240.pdf
+2026-10-08 20:12:58,045 [INFO] PDF generado para alarma 'PE Loss' (5010KNBN25AL0074): C:\Users\Lenovo\Desktop\goodwe_bot\reports_output\pdf\alarma_5010KNBN25AL0074_20261008201258.pdf
+2026-10-08 20:13:15,462 [INFO] PDF generado para alarma 'PE Loss' (56000NBB25AL0077): C:\Users\Lenovo\Desktop\goodwe_bot\reports_output\pdf\alarma_56000NBB25AL0077_20261008201315.pdf
+2026-10-08 20:13:32,885 [INFO] PDF generado para alarma 'PE Loss' (56000NBB262L0047): C:\Users\Lenovo\Desktop\goodwe_bot\reports_output\pdf\alarma_56000NBB262L0047_20261008201332.pdf
+2026-10-08 20:13:40,143 [INFO] PDF generado para alarma 'CT Loss' (56000NBB262L0005): C:\Users\Lenovo\Desktop\goodwe_bot\reports_output\pdf\alarma_56000NBB262L0005_20261008201340.pdf
+2026-10-08 20:13:43,690 [INFO] PDF generado para alarma 'PE Loss' (56000NBB262L0005): C:\Users\Lenovo\Desktop\goodwe_bot\reports_output\pdf\alarma_56000NBB262L0005_20261008201343.pdf
+2026-10-08 20:13:43,690 [INFO] Resumen del ciclo: {'nueva': 4, 'persistente': 3, 'resuelta': 0, 'sin_cambios': 1}
+2026-10-08 20:13:43,763 [INFO] Reporte Excel generado: C:\Users\Lenovo\Desktop\goodwe_bot\reports_output\excel\reporte_diario_20261008.xlsx
+2026-10-08 20:13:46,221 [INFO] Reporte enviado por correo a jorgehvelasco05@gmail.com
+2026-10-08 20:13:48,609 [INFO] Ciclo finalizado. Navegador cerrado.
+2026-10-08 20:14:59,219 [INFO] Iniciando ciclo del bot.
+2026-10-08 20:14:59,226 [INFO] ====== WebDriver manager ======
+2026-10-08 20:15:00,260 [INFO] Driver [C:\Users\Lenovo\.wdm\drivers\chromedriver\win64\154.0.8037.92\chromedriver-win64/chromedriver.exe] found in cache by browser version
+2026-10-08 20:15:15,282 [INFO] Login exitoso en SEMS+.
+2026-10-08 20:15:33,825 [ERROR] Error durante el ciclo del bot: Message: 
+Traceback (most recent call last):
+  File "c:\Users\Lenovo\Desktop\goodwe_bot\main.py", line 41, in ejecutar_ciclo
+    alarmas = scraper.listar_alarmas_activas()
+  File "c:\Users\Lenovo\Desktop\goodwe_bot\scraper\alarms.py", line 49, in listar_alarmas_activas
+    filas = self._filas_tabla()
+  File "c:\Users\Lenovo\Desktop\goodwe_bot\scraper\alarms.py", line 37, in _filas_tabla
+    return self.wait.until(
+           ~~~~~~~~~~~~~~~^
+        EC.presence_of_all_elements_located(
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+            (By.XPATH, f"{self._xpath_tabla_body()}/table/tbody/tr")
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        )
+        ^
+    )
+    ^
+  File "C:\Users\Lenovo\Desktop\goodwe_bot\venv\Lib\site-packages\selenium\webdriver\support\wait.py", line 121, in until
+    raise TimeoutException(message, screen, stacktrace)
+selenium.common.exceptions.TimeoutException: Message: 
+
+2026-10-08 20:15:36,194 [INFO] Ciclo finalizado. Navegador cerrado.
+2026-10-08 20:15:49,134 [INFO] Iniciando ciclo del bot.
+2026-10-08 20:15:49,139 [INFO] ====== WebDriver manager ======
+2026-10-08 20:15:50,200 [INFO] Driver [C:\Users\Lenovo\.wdm\drivers\chromedriver\win64\154.0.8037.92\chromedriver-win64/chromedriver.exe] found in cache by browser version
+2026-10-08 20:16:20,704 [ERROR] Error durante el ciclo del bot: No se pudo validar el login en SEMS+. Verifica los XPath, las credenciales o si el checkbox de términos quedó marcado.
+Traceback (most recent call last):
+  File "c:\Users\Lenovo\Desktop\goodwe_bot\main.py", line 36, in ejecutar_ciclo
+    driver = self.auth.login()
+  File "c:\Users\Lenovo\Desktop\goodwe_bot\scraper\auth.py", line 110, in login
+    raise RuntimeError("No se pudo validar el login en SEMS+. Verifica los XPath, las credenciales o si el checkbox de términos quedó marcado.")
+RuntimeError: No se pudo validar el login en SEMS+. Verifica los XPath, las credenciales o si el checkbox de términos quedó marcado.
+2026-10-08 20:16:22,924 [INFO] Ciclo finalizado. Navegador cerrado.
+2026-10-08 20:16:30,585 [INFO] Iniciando ciclo del bot.
+2026-10-08 20:16:30,590 [INFO] ====== WebDriver manager ======
+2026-10-08 20:16:31,498 [INFO] Driver [C:\Users\Lenovo\.wdm\drivers\chromedriver\win64\154.0.8037.92\chromedriver-win64/chromedriver.exe] found in cache by browser version
+2026-10-08 20:17:12,765 [ERROR] Error durante el ciclo del bot: Message: no such window: target window already closed
+from unknown error: web view not found
+  (Session info: chrome=154.0.8037.99)
+Stacktrace:
+	chromedriver!GetHandleVerifier [0x7ff6e3009d55+5a55]
+	chromedriver!(No symbol) [0x7ff6e2f2f540]
+	chromedriver!(No symbol) [0x7ff6e2d545fd]
+	chromedriver!(No symbol) [0x7ff6e2d2b5d2]
+	chromedriver!(No symbol) [0x7ff6e2de07f6]
+	chromedriver!(No symbol) [0x7ff6e2dff5bd]
+	chromedriver!(No symbol) [0x7ff6e2da1a12]
+	chromedriver!(No symbol) [0x7ff6e2da2823]
+	chromedriver!GetHandleVerifier [0x7ff6e34204b1+41c1b1]
+	chromedriver!GetHandleVerifier [0x7ff6e344e26b+449f6b]
+	chromedriver!GetHandleVerifier [0x7ff6e344274e+43e44e]
+	chromedriver!GetHandleVerifier [0x7ff6e31032fe+feffe]
+	chromedriver!(No symbol) [0x7ff6e2f3cb55]
+	chromedriver!(No symbol) [0x7ff6e2f37f64]
+	chromedriver!(No symbol) [0x7ff6e2f380f4]
+	chromedriver!(No symbol) [0x7ff6e2f22e4c]
+	KERNEL32!BaseThreadInitThunk [0x7ffd9648cdf7+17]
+	ntdll!RtlUserThreadStart [0x7ffd9813ee4c+2c]
+Traceback (most recent call last):
+  File "c:\Users\Lenovo\Desktop\goodwe_bot\main.py", line 36, in ejecutar_ciclo
+    driver = self.auth.login()
+  File "c:\Users\Lenovo\Desktop\goodwe_bot\scraper\auth.py", line 103, in login
+    self._aceptar_cookies()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "c:\Users\Lenovo\Desktop\goodwe_bot\scraper\auth.py", line 46, in _aceptar_cookies
+    boton = WebDriverWait(self.driver, 5).until(
+        EC.element_to_be_clickable((By.XPATH, settings.xpaths["boton_cookies"]))
+    )
+  File "C:\Users\Lenovo\Desktop\goodwe_bot\venv\Lib\site-packages\selenium\webdriver\support\wait.py", line 112, in until
+    value = method(self._driver)
+  File "C:\Users\Lenovo\Desktop\goodwe_bot\venv\Lib\site-packages\selenium\webdriver\support\expected_conditions.py", line 518, in _predicate
+    target = driver.find_element(*target)  # grab element at locator
+  File "C:\Users\Lenovo\Desktop\goodwe_bot\venv\Lib\site-packages\selenium\webdriver\remote\webdriver.py", line 913, in find_element
+    return self.execute(Command.FIND_ELEMENT, {"using": by, "value": value})["value"]
+           ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Lenovo\Desktop\goodwe_bot\venv\Lib\site-packages\selenium\webdriver\remote\webdriver.py", line 506, in execute
+    self.error_handler.check_response(response)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "C:\Users\Lenovo\Desktop\goodwe_bot\venv\Lib\site-packages\selenium\webdriver\remote\errorhandler.py", line 232, in check_response
+    raise exception_class(message, screen, stacktrace)
+selenium.common.exceptions.NoSuchWindowException: Message: no such window: target window already closed
+from unknown error: web view not found
+  (Session info: chrome=154.0.8037.99)
+Stacktrace:
+	chromedriver!GetHandleVerifier [0x7ff6e3009d55+5a55]
+	chromedriver!(No symbol) [0x7ff6e2f2f540]
+	chromedriver!(No symbol) [0x7ff6e2d545fd]
+	chromedriver!(No symbol) [0x7ff6e2d2b5d2]
+	chromedriver!(No symbol) [0x7ff6e2de07f6]
+	chromedriver!(No symbol) [0x7ff6e2dff5bd]
+	chromedriver!(No symbol) [0x7ff6e2da1a12]
+	chromedriver!(No symbol) [0x7ff6e2da2823]
+	chromedriver!GetHandleVerifier [0x7ff6e34204b1+41c1b1]
+	chromedriver!GetHandleVerifier [0x7ff6e344e26b+449f6b]
+	chromedriver!GetHandleVerifier [0x7ff6e344274e+43e44e]
+	chromedriver!GetHandleVerifier [0x7ff6e31032fe+feffe]
+	chromedriver!(No symbol) [0x7ff6e2f3cb55]
+	chromedriver!(No symbol) [0x7ff6e2f37f64]
+	chromedriver!(No symbol) [0x7ff6e2f380f4]
+	chromedriver!(No symbol) [0x7ff6e2f22e4c]
+	KERNEL32!BaseThreadInitThunk [0x7ffd9648cdf7+17]
+	ntdll!RtlUserThreadStart [0x7ffd9813ee4c+2c]
+
+2026-10-08 20:17:14,904 [INFO] Ciclo finalizado. Navegador cerrado.
+2026-10-08 20:17:21,606 [INFO] Iniciando ciclo del bot.
+2026-10-08 20:17:21,612 [INFO] ====== WebDriver manager ======
+2026-10-08 20:17:22,512 [INFO] Driver [C:\Users\Lenovo\.wdm\drivers\chromedriver\win64\154.0.8037.92\chromedriver-win64/chromedriver.exe] found in cache by browser version
+2026-10-08 20:18:08,423 [ERROR] Error durante el ciclo del bot: No se pudo validar el login en SEMS+. Verifica los XPath, las credenciales o si el checkbox de términos quedó marcado.
+Traceback (most recent call last):
+  File "c:\Users\Lenovo\Desktop\goodwe_bot\main.py", line 36, in ejecutar_ciclo
+    driver = self.auth.login()
+  File "c:\Users\Lenovo\Desktop\goodwe_bot\scraper\auth.py", line 110, in login
+    raise RuntimeError("No se pudo validar el login en SEMS+. Verifica los XPath, las credenciales o si el checkbox de términos quedó marcado.")
+RuntimeError: No se pudo validar el login en SEMS+. Verifica los XPath, las credenciales o si el checkbox de términos quedó marcado.
+2026-10-08 20:18:10,730 [INFO] Ciclo finalizado. Navegador cerrado.
+2026-10-08 20:41:55,101 [INFO] Iniciando ciclo del bot.
+2026-10-08 20:41:55,108 [INFO] ====== WebDriver manager ======
+2026-10-08 20:41:56,211 [INFO] Driver [C:\Users\Lenovo\.wdm\drivers\chromedriver\win64\154.0.8037.92\chromedriver-win64/chromedriver.exe] found in cache by browser version
+2026-10-08 20:42:09,240 [INFO] Login exitoso en SEMS+.
+2026-10-08 20:42:12,365 [INFO] Se leyeron 8 alarmas de la plataforma.
+2026-10-08 20:42:32,732 [ERROR] El drawer de detalle no se abrió para curva_54200DSC251S0107_08/10/2026 05:52:31
+2026-10-08 20:42:34,771 [INFO] Detalle listo: 'CT Loss' (54200DSC251S0107) | razón=NO | sugerencia=NO | curva=NO
+2026-10-08 20:42:49,000 [INFO] Detalle listo: 'Grid Power Outage' (5017KDTR257L0023) | razón=sí | sugerencia=sí | curva=sí
+2026-10-08 20:42:53,366 [INFO] Detalle listo: 'PE Loss' (5010KNBN25AL0074) | razón=sí | sugerencia=sí | curva=sí
+2026-10-08 20:42:57,671 [INFO] Detalle listo: 'PE Loss' (56000NBB25AL0077) | razón=sí | sugerencia=sí | curva=sí
+2026-10-08 20:43:02,005 [INFO] Detalle listo: 'PE Loss' (56000NBB262L0047) | razón=sí | sugerencia=sí | curva=sí
+2026-10-08 20:43:06,330 [INFO] Detalle listo: 'CT Loss' (56000NBB262L0005) | razón=sí | sugerencia=sí | curva=sí
+2026-10-08 20:43:10,681 [INFO] Detalle listo: 'PE Loss' (56000NBB262L0005) | razón=sí | sugerencia=sí | curva=sí
+2026-10-08 20:43:10,681 [INFO] Resumen del ciclo: {'nueva': 0, 'persistente': 7, 'resuelta': 0, 'sin_cambios': 1}
+2026-10-08 20:43:10,748 [INFO] Reporte Excel generado: C:\Users\Lenovo\Desktop\goodwe_bot\reports_output\excel\reporte_diario_20261008.xlsx
+2026-10-08 20:43:10,973 [INFO] PDF consolidado generado (7 alarmas): C:\Users\Lenovo\Desktop\goodwe_bot\reports_output\pdf\reporte_alarmas_20261008_2043.pdf
+2026-10-08 20:43:13,798 [INFO] Reporte enviado por correo a jorgehvelasco05@gmail.com
+2026-10-08 20:43:16,268 [INFO] Ciclo finalizado. Navegador cerrado.
