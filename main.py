@@ -1,4 +1,5 @@
 import logging
+from datetime import datetime
 
 from config.settings import settings
 from scraper.auth import GoodweAuth
@@ -23,13 +24,14 @@ class GoodweBot:
     def _configurar_logging():
         logging.basicConfig(
             filename=settings.log_file,
+            encoding="utf-8",
             level=logging.INFO,
             format="%(asctime)s [%(levelname)s] %(message)s",
         )
 
     def ejecutar_ciclo(self):
         """Un ciclo completo del bot: se llama una vez por ejecución programada."""
-        self.logger.info("Iniciando ciclo del bot.")
+        self.logger.info("Iniciando ciclo del bot (headless=%s).", settings.headless)
         resumen = {"nueva": 0, "persistente": 0, "resuelta": 0, "sin_cambios": 0}
         fichas = []  # una entrada por alarma nueva/persistente; con ellas se arma UN solo PDF
 
@@ -66,8 +68,9 @@ class GoodweBot:
             self._sincronizar_base_de_datos(alarmas, resumen)
             self.logger.info(f"Resumen del ciclo: {resumen}")
 
-            if fichas:
-                self._generar_y_enviar_reportes(fichas)
+            resueltas = self._resueltas_para_informar()
+            if fichas or resueltas:
+                self._generar_y_enviar_reportes(fichas, resueltas)
             else:
                 self.logger.info("Sin novedades. No se generan reportes en este ciclo.")
 
@@ -102,13 +105,41 @@ class GoodweBot:
         except Exception as e:
             self.logger.exception(f"No se pudo sincronizar la base de datos: {e}")
 
-    def _generar_y_enviar_reportes(self, fichas: list[dict]):
+    def _resueltas_para_informar(self):
+        """
+        Alarmas resueltas que se informan HOY. Solo en los días de resumen (settings.dias_resumen_resueltas)
+        y solo las que aún no se habían informado: cada una aparece una vez y no se queda en el reporte.
+        """
+        try:
+            dias = settings.ventana_resueltas_dias
+            self.repo.descartar_resueltas_viejas(dias)   # las muy antiguas nunca se muestran
+            if datetime.now().weekday() not in settings.dias_resumen_resueltas:
+                return []
+            resueltas = self.repo.obtener_resueltas_pendientes(dias)
+            self.logger.info(f"Hoy es día de resumen: {len(resueltas)} alarma(s) resuelta(s) por informar.")
+            return resueltas
+        except Exception as e:
+            self.logger.exception(f"No se pudieron consultar las alarmas resueltas: {e}")
+            return []
+
+    def _generar_y_enviar_reportes(self, fichas: list[dict], resueltas=None):
+        resueltas = resueltas or []
+        dia_resumen = datetime.now().weekday() in settings.dias_resumen_resueltas
         activas = self.repo.obtener_activas()
-        ruta_excel = ExcelReportGenerator(activas).generar()
+
+        # Una sola regla para "Nueva/Persistente" en Excel y PDF: la de la base de datos
+        # (Nueva = primera detección HOY; Persistente = viene de días anteriores).
+        situacion = {(r["sn"], r["nombre_alarma"], r["hora_alarma"]): r["situacion"].lower()
+                     for r in activas}
+        for f in fichas:
+            f["clasificacion"] = situacion.get(
+                (f["sn"], f["nombre_alarma"], f["hora_alarma"]), f["clasificacion"])
+
+        ruta_excel = ExcelReportGenerator(activas, resueltas=resueltas if dia_resumen else None).generar()
         self.logger.info(f"Reporte Excel generado: {ruta_excel}")
 
         # UN solo PDF con resumen + una página por alarma
-        ruta_pdf = PDFReportGenerator(fichas).generar()
+        ruta_pdf = PDFReportGenerator(fichas, resueltas=resueltas if dia_resumen else None).generar()
         self.logger.info(f"PDF consolidado generado ({len(fichas)} alarmas): {ruta_pdf}")
 
         try:
@@ -118,10 +149,15 @@ class GoodweBot:
                 cuerpo=(
                     f"Adjunto el reporte diario de alarmas (Excel) y el informe consolidado en PDF "
                     f"con el detalle de {len(fichas)} alarma(s), generados automáticamente por el bot."
+                    + (f"\n\nResumen de seguimiento: {len(resueltas)} alarma(s) se resolvieron desde el "
+                       f"último aviso (ver la hoja 'Resueltas' del Excel y el final de la primera página del PDF)."
+                       if dia_resumen and resueltas else "")
                 ),
                 adjuntos=[ruta_excel, ruta_pdf],
             )
             self.logger.info(f"Reporte enviado por correo a {settings.email_to}")
+            # Solo si el correo salió: las resueltas ya informadas no vuelven a aparecer
+            self.repo.marcar_resueltas_avisadas([r["id"] for r in resueltas])
         except Exception as e:
             self.logger.exception(f"No se pudo enviar el correo: {e}")
 

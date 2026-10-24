@@ -30,7 +30,7 @@ class PDFReportGenerator:
     GRIS_OSC = colors.HexColor("#3A3A3A")
     GRIS_CLARO = colors.HexColor("#F2F2F2")
 
-    def __init__(self, alarmas: list[dict], logo_path=None):
+    def __init__(self, alarmas: list[dict], logo_path=None, resueltas=None):
         """
         alarmas: lista de diccionarios con los datos de cada alarma. Claves esperadas:
         nombre_alarma, nombre_alarma_es, nombre_planta, sn, equipo, tipo_alarma, nivel,
@@ -38,6 +38,8 @@ class PDFReportGenerator:
         curva_path, clasificacion ('nueva' o 'persistente').
         """
         self.alarmas = self._ordenar(alarmas)
+        # None = día normal (no se muestra la sección). En días de resumen: filas de la BD.
+        self.resueltas = None if resueltas is None else [dict(r) for r in resueltas]
         self.logo_path = buscar_logo(logo_path)   # IMG/sunnyapp.jpg (ver reports/logo.py); None si no existe
         self.fecha = datetime.now()
         self._crear_estilos()
@@ -187,7 +189,40 @@ class PDFReportGenerator:
             ("LINEBELOW", (0, 0), (-1, -1), 0.4, colors.HexColor("#D9D9D9")),
         ]))
         elementos.append(tabla)
+        if self.resueltas is not None:
+            elementos += self._seccion_resueltas()
         return elementos
+
+    def _seccion_resueltas(self):
+        """Tabla compacta (sin fichas) con las alarmas resueltas desde el último aviso."""
+        el = [Spacer(1, 18), Paragraph("Alarmas resueltas desde el último aviso", self.s_h1)]
+        if not self.resueltas:
+            el.append(Paragraph("No hubo alarmas resueltas desde el último aviso.", self.s_celda))
+            return el
+        enc = ["Resuelta", "Planta", "Alarma", "Equipo", "Estuvo activa"]
+        filas = [[Paragraph(h, self.s_celda_head) for h in enc]]
+        for a in self.resueltas:
+            nombre_en = a.get("nombre_alarma") or "-"
+            nombre_es = a.get("nombre_alarma_es") or nombre_en
+            fecha = str(a.get("fecha_resolucion") or "-")[:16].replace("T", " ")
+            filas.append([
+                Paragraph(escape(fecha), self.s_celda),
+                Paragraph(escape(a.get("nombre_planta") or "-"), self.s_celda),
+                Paragraph(escape(nombre_es), self.s_celda),
+                Paragraph(escape(a.get("equipo") or "-"), self.s_celda),
+                Paragraph(escape(a.get("duracion") or "-"), self.s_celda),
+            ])
+        t = Table(filas, colWidths=[3.2 * cm, 5.6 * cm, 4.4 * cm, 2.4 * cm, 2.9 * cm], repeatRows=1)
+        t.setStyle(TableStyle([
+            ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#2E7D32")),
+            ("ROWBACKGROUNDS", (0, 1), (-1, -1), [colors.white, colors.HexColor("#E2F0D9")]),
+            ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
+            ("TOPPADDING", (0, 0), (-1, -1), 5),
+            ("BOTTOMPADDING", (0, 0), (-1, -1), 5),
+            ("LINEBELOW", (0, 0), (-1, -1), 0.4, colors.HexColor("#D9D9D9")),
+        ]))
+        el.append(t)
+        return el
 
     # ------------------------------------------------------------------
     # Ficha por alarma (una página cada una)

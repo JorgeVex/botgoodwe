@@ -9,6 +9,7 @@ Interfaz que usa main.py (no cambia):  ExcelReportGenerator(alarmas).generar() -
 """
 import logging
 import re
+import unicodedata
 from collections import Counter
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
@@ -61,6 +62,7 @@ FUENTE = "Calibri"
 
 HOJA_PRINCIPAL = "Reporte de alarmas"
 HOJA_RESUMEN = "Resumen ejecutivo"
+HOJA_RESUELTAS = "Resueltas"
 NOMBRE_TABLA = "TablaAlarmas"
 
 # (encabezado, ancho de columna)
@@ -76,6 +78,25 @@ COLUMNAS = [
     ("Duración", 20),
     ("Sugerencia", 46),
 ]
+# ----------------------------------------------------------------------
+# Agrupación de plantas: Goodwe a veces escribe la misma planta con nombres distintos
+# ("600 Granja Productora" / "600. GRANJA PRODUCTORA (7,56 kWp - 30 kWh)"). Para contar
+# y agrupar se usa el código numérico inicial (si lo hay) o, si no, el nombre normalizado.
+# ----------------------------------------------------------------------
+def clave_planta(nombre: str) -> str:
+    base = unicodedata.normalize("NFKD", nombre or "").encode("ascii", "ignore").decode().lower()
+    base = re.sub(r"\(.*?\)", " ", base)                 # quita "(7,56 kWp - 30 kWh)"
+    m = re.match(r"\s*(\d{2,})\b", base)
+    if m:
+        return f"cod:{m.group(1)}"
+    return re.sub(r"[^a-z0-9]+", " ", base).strip()
+
+
+def _nombre_representativo(variantes) -> str:
+    """De las variantes de una misma planta, la más completa (con kWp entre paréntesis, o la más larga)."""
+    return max(variantes, key=lambda v: ("(" in v, len(v)))
+
+
 CAMPOS_REQUERIDOS = ("sn", "nombre_planta", "nombre_alarma", "hora_alarma", "estado")
 FILA_ENCABEZADO_TABLA = 10
 
@@ -193,6 +214,12 @@ def preparar_registros(alarmas) -> list[dict]:
             "critica": _texto(a.get("nivel"), "") in NIVELES_CRITICOS,
             "activa": estado == "Ocurriendo",
         })
+    # Unifica plantas con nombres distintos (misma planta) para conteos y gráficos
+    variantes: dict[str, set] = {}
+    for r in registros:
+        variantes.setdefault(clave_planta(r["planta"]), set()).add(r["planta"])
+    for r in registros:
+        r["planta_grupo"] = _nombre_representativo(variantes[clave_planta(r["planta"])])
     # Nuevas primero; dentro de cada grupo, la más reciente primero (fechas inválidas al final)
     registros.sort(key=lambda r: (r["situacion"] != "Nueva", -(r["hora"].timestamp() if r["hora"] else 0)))
     return registros
@@ -204,12 +231,16 @@ def preparar_registros(alarmas) -> list[dict]:
 class ExcelReportGenerator:
     """Genera el reporte diario de alarmas activas en formato Excel."""
 
-    def __init__(self, alarmas, logo_path=None, ruta_salida=None):
+    def __init__(self, alarmas, logo_path=None, ruta_salida=None, resueltas=None):
         """
         alarmas: filas de AlarmaRepository.obtener_activas().
         logo_path: opcional; por defecto se busca <raíz>/IMG/sunnyapp.jpg (ver reports/logo.py).
         ruta_salida: carpeta de destino; por defecto settings.excel_dir.
+        resueltas: None en los días normales. En los días de resumen, filas de
+                   AlarmaRepository.obtener_resueltas_pendientes() (puede ser una lista vacía):
+                   agrega la hoja "Resueltas" y llena la tarjeta "Resueltas".
         """
+        self.resueltas = None if resueltas is None else [_a_dict(r) for r in resueltas]
         self.ahora = datetime.now(_zona_horaria())
         self.registros = preparar_registros(alarmas)
         self.logo_path = logo_path
@@ -236,6 +267,14 @@ class ExcelReportGenerator:
             log.exception("No se pudo generar la hoja 'Resumen ejecutivo'; se entrega solo la hoja principal.")
             if HOJA_RESUMEN in self.wb.sheetnames:
                 del self.wb[HOJA_RESUMEN]
+
+        if self.resueltas is not None:
+            try:
+                self._hoja_resueltas()
+            except Exception:
+                log.exception("No se pudo generar la hoja 'Resueltas'.")
+                if HOJA_RESUELTAS in self.wb.sheetnames:
+                    del self.wb[HOJA_RESUELTAS]
 
         ruta = self._ruta_disponible()
         try:
@@ -311,7 +350,7 @@ class ExcelReportGenerator:
         activas = [r for r in self.registros if r["activa"]]
         criticas = [r for r in activas if r["critica"]]
         resueltas = [r for r in self.registros if r["estado"] == "Restaurado"]
-        plantas = {r["planta"] for r in activas}
+        plantas = {r["planta_grupo"] for r in activas}
         con_duracion = [r for r in activas if r["delta"] is not None]
         mayor = max(con_duracion, key=lambda r: r["delta"], default=None)
         texto_mayor = f"{mayor['duracion']}  ·  {mayor['nombre']}" if mayor else "No disponible"
@@ -322,7 +361,7 @@ class ExcelReportGenerator:
             ("Alarmas activas", len(activas), 2, 2, AZUL, BLANCO),
             ("Críticas activas", len(criticas), 3, 4, ROJO_SUAVE if criticas else VERDE_SUAVE,
              ROJO_TEXTO if criticas else "2E7D32"),
-            ("Resueltas", len(resueltas), 5, 5, VERDE_SUAVE, "2E7D32"),
+            ("Resueltas", len(self.resueltas) if self.resueltas is not None else "—", 5, 5, VERDE_SUAVE, "2E7D32"),
             ("Plantas afectadas", len(plantas), 6, 7, GRIS_CLARO, AZUL_OSCURO),
             ("Mayor duración activa", texto_mayor, 8, len(COLUMNAS), AMARILLO_SUAVE, "7F6000"),
         ]
@@ -450,7 +489,7 @@ class ExcelReportGenerator:
         ws["A2"].alignment = Alignment(indent=1)
 
         activas = [r for r in self.registros if r["activa"]]
-        por_planta = Counter(r["planta"] for r in activas).most_common(10)
+        por_planta = Counter(r["planta_grupo"] for r in activas).most_common(10)
         por_tipo = Counter(r["tipo"] for r in activas).most_common(10)
         por_estado = Counter(f"{r['estado']} · {r['situacion']}" for r in self.registros).most_common()
         antiguas = sorted((r for r in activas if r["delta"]), key=lambda r: r["delta"], reverse=True)[:5]
@@ -494,6 +533,69 @@ class ExcelReportGenerator:
         "Alarmas más antiguas: llevan más tiempo sin resolverse; son la prioridad de seguimiento.",
         "Las alarmas resueltas salen automáticamente del reporte y no se muestran aquí.",
     ]
+
+    # ------------------------------------------------------------------
+    # Hoja "Resueltas" (solo en los días de resumen)
+    # ------------------------------------------------------------------
+    def _hoja_resueltas(self):
+        ws = self.wb.create_sheet(HOJA_RESUELTAS)
+        ws.sheet_view.showGridLines = False
+        encabezados = [("Fecha de resolución", 21), ("Nombre de la planta", 36), ("SN", 22), ("Equipo", 18),
+                       ("Nombre de la alarma", 30), ("Tipo de alarma", 30), ("Estuvo activa", 20)]
+        self._anchos(ws, [w for _, w in encabezados])
+
+        ws.merge_cells(start_row=1, start_column=1, end_row=1, end_column=len(encabezados))
+        ws["A1"] = "SUNNY APP  |  ALARMAS RESUELTAS DESDE EL ÚLTIMO AVISO"
+        ws["A1"].font = Font(name=FUENTE, size=16, bold=True, color=NARANJA)
+        ws["A1"].alignment = Alignment(vertical="center", indent=1)
+        ws.row_dimensions[1].height = 30
+        ws.merge_cells(start_row=2, start_column=1, end_row=2, end_column=len(encabezados))
+        ws["A2"] = ("Estas alarmas ya no aparecen en la plataforma. Se informan una sola vez y no vuelven "
+                    "a mostrarse en próximos reportes.")
+        ws["A2"].font = Font(name=FUENTE, size=10, italic=True, color="595959")
+        ws["A2"].alignment = Alignment(indent=1)
+
+        fila = 4
+        for j, (h, _) in enumerate(encabezados, start=1):
+            self._celda_cabecera(ws, fila, j, h)
+        ws.row_dimensions[fila].height = 24
+
+        if not self.resueltas:
+            ws.merge_cells(start_row=fila + 1, start_column=1, end_row=fila + 1, end_column=len(encabezados))
+            c = ws.cell(row=fila + 1, column=1, value="No hubo alarmas resueltas desde el último aviso.")
+            c.font = Font(name=FUENTE, size=11, color="2E7D32", bold=True)
+            c.alignment = Alignment(horizontal="center", vertical="center")
+            ws.row_dimensions[fila + 1].height = 28
+            self._configurar_impresion(ws, f"A1:{get_column_letter(len(encabezados))}{fila + 1}")
+            return
+
+        filas = []
+        for a in self.resueltas:
+            nombre_en = _texto(a.get("nombre_alarma"))
+            nombre_es = a.get("nombre_alarma_es") or traducir_alarma(nombre_en) or nombre_en
+            tipo = traducir_tipo(a["tipo_alarma"]) if _texto(a.get("tipo_alarma"), "") else "No disponible"
+            delta = parsear_duracion(a.get("duracion"))
+            resolucion = parsear_fecha(a.get("fecha_resolucion"))
+            filas.append((resolucion, [
+                resolucion or _texto(a.get("fecha_resolucion")), _texto(a.get("nombre_planta")),
+                _texto(a.get("sn")), _texto(a.get("equipo")), nombre_es, tipo,
+                formatear_duracion(delta, a.get("duracion")),
+            ]))
+        filas.sort(key=lambda t: t[0] or datetime.min, reverse=True)
+
+        for i, (_, valores) in enumerate(filas, start=fila + 1):
+            for j, v in enumerate(valores, start=1):
+                c = ws.cell(row=i, column=j, value=v)
+                c.font = Font(name=FUENTE, size=10)
+                c.border = self.borde
+                c.fill = PatternFill("solid", fgColor=VERDE_SUAVE if i % 2 else BLANCO)
+                c.alignment = Alignment(vertical="center", wrap_text=True)
+                if j == 1 and isinstance(v, datetime):
+                    c.number_format = "dd/mm/yyyy hh:mm"
+            ws.row_dimensions[i].height = self._alto_fila(valores)
+        ws.freeze_panes = ws.cell(row=fila + 1, column=1)
+        self._configurar_impresion(ws, f"A1:{get_column_letter(len(encabezados))}{fila + len(filas)}",
+                                   repetir=f"{fila}:{fila}")
 
     def _nota_lectura(self, ws, fila) -> int:
         """Escribe la nota de ayuda y devuelve la última fila usada."""

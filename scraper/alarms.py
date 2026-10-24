@@ -37,12 +37,61 @@ class GoodweAlarmScraper(DetalleAlarmaMixin):
         """
         return f"{settings.xpaths['tabla_alarmas']}/div/div[2]"
 
+    def _guardar_diagnostico(self, nombre: str):
+        """Deja una foto y el HTML de la pantalla actual en logs/ para ver qué estaba mostrando el navegador."""
+        try:
+            self.driver.save_screenshot(str(settings.logs_dir / f"{nombre}.png"))
+            (settings.logs_dir / f"{nombre}.html").write_text(
+                self.driver.page_source, encoding="utf-8")
+        except Exception:  # noqa: BLE001
+            pass
+
     def _filas_tabla(self):
-        return self.wait.until(
-            EC.presence_of_all_elements_located(
-                (By.XPATH, f"{self._xpath_tabla_body()}/table/tbody/tr")
-            )
-        )
+        xp = f"{self._xpath_tabla_body()}/table/tbody/tr"
+        espera = WebDriverWait(self.driver, 30)   # en headless la tabla tarda más en pintarse
+        try:
+            return espera.until(EC.presence_of_all_elements_located((By.XPATH, xp)))
+        except TimeoutException:
+            # Un segundo intento: volver a abrir el centro de alarmas y esperar de nuevo
+            self._guardar_diagnostico("error_tabla_1")
+            self.abrir_centro_alarmas()
+            try:
+                return espera.until(EC.presence_of_all_elements_located((By.XPATH, xp)))
+            except TimeoutException:
+                self._guardar_diagnostico("error_tabla_2")
+                raise
+
+    _JS_LEER_TABLA = """
+        const filas = document.evaluate(arguments[0], document, null,
+            XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
+        const salida = [];
+        for (let i = 0; i < filas.snapshotLength; i++) {
+            const tds = filas.snapshotItem(i).querySelectorAll('td');
+            salida.push(Array.from(tds).map(td => (td.innerText || '').trim()));
+        }
+        return salida;
+    """
+
+    def _leer_filas_texto(self) -> list[list[str]]:
+        """
+        Lee TODA la tabla en una sola llamada JavaScript (texto de cada celda). Así no
+        se pueden quedar 'stale' los elementos si SEMS+ vuelve a pintar la tabla mientras
+        se lee. Se reintenta si la tabla se refresca justo en ese momento.
+        """
+        xp = f"{self._xpath_tabla_body()}/table/tbody/tr"
+        self._filas_tabla()   # espera a que existan filas (con reintento y diagnóstico)
+        ultimo = None
+        for _ in range(4):
+            time.sleep(1.5)   # deja que termine el repintado de la tabla
+            try:
+                filas = self.driver.execute_script(self._JS_LEER_TABLA, xp)
+            except Exception:  # noqa: BLE001
+                continue
+            # estable: dos lecturas seguidas iguales
+            if filas and filas == ultimo:
+                return filas
+            ultimo = filas
+        return ultimo or []
 
     def listar_alarmas_activas(self) -> list[Alarma]:
         """
@@ -50,27 +99,26 @@ class GoodweAlarmScraper(DetalleAlarmaMixin):
         una lista de objetos Alarma con los datos visibles en la tabla
         (todas las columnas confirmadas, excepto 'Operation').
         """
-        filas = self._filas_tabla()
         alarmas = []
 
-        for celdas in [f.find_elements(By.TAG_NAME, "td") for f in filas]:
+        for celdas in self._leer_filas_texto():
             if len(celdas) < 12:
                 continue
 
-            nombre_en = celdas[0].text.strip()
+            nombre_en = celdas[0].strip()
             alarmas.append(Alarma(
                 nombre_alarma=nombre_en,
                 nombre_alarma_es=traducir_alarma(nombre_en),
-                equipo=celdas[1].text.strip(),
-                estado="Ocurriendo" if "Occurring" in celdas[2].text else "Restaurado",
-                nivel="Fallo" if "Fault" in celdas[3].text else "Alarma",
-                hora_alarma=celdas[4].text.strip(),
-                nombre_planta=celdas[5].text.strip(),
-                sn=celdas[6].text.strip(),
-                tipo_alarma=celdas[8].text.strip(),
-                duracion=celdas[9].text.strip(),
-                recovery_time=celdas[10].text.strip(),
-                confirm_status=celdas[11].text.strip(),
+                equipo=celdas[1].strip(),
+                estado="Ocurriendo" if "Occurring" in celdas[2] else "Restaurado",
+                nivel="Fallo" if "Fault" in celdas[3] else "Alarma",
+                hora_alarma=celdas[4].strip(),
+                nombre_planta=celdas[5].strip(),
+                sn=celdas[6].strip(),
+                tipo_alarma=celdas[8].strip(),
+                duracion=celdas[9].strip(),
+                recovery_time=celdas[10].strip(),
+                confirm_status=celdas[11].strip(),
             ))
 
         return alarmas

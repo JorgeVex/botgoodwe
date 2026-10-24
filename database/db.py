@@ -40,9 +40,14 @@ class Database:
                     primera_deteccion TEXT NOT NULL,
                     ultima_deteccion TEXT NOT NULL,
                     fecha_resolucion TEXT,
+                    resuelta_avisada INTEGER NOT NULL DEFAULT 0,
                     UNIQUE(sn, nombre_alarma, hora_alarma)
                 )
             """)
+            # Bases creadas antes de esta versión: agregar la columna si falta
+            columnas = {f["name"] for f in conn.execute("PRAGMA table_info(alarmas)")}
+            if "resuelta_avisada" not in columnas:
+                conn.execute("ALTER TABLE alarmas ADD COLUMN resuelta_avisada INTEGER NOT NULL DEFAULT 0")
 
 
 class AlarmaRepository:
@@ -98,7 +103,7 @@ class AlarmaRepository:
                 # la sigue mostrando como activa con la misma hora de inicio: se reabre.
                 conn.execute("""
                     UPDATE alarmas
-                    SET estado='Ocurriendo', fecha_resolucion=NULL, ultima_deteccion=?, duracion=?
+                    SET estado='Ocurriendo', fecha_resolucion=NULL, resuelta_avisada=0, ultima_deteccion=?, duracion=?
                     WHERE id=?
                 """, (ahora, alarma.duracion, existente["id"]))
                 return "persistente"
@@ -128,6 +133,42 @@ class AlarmaRepository:
                     (ahora, ahora, r["id"]),
                 )
         return cerradas
+
+    # ------------------------------------------------------------------
+    # Seguimiento de alarmas resueltas (aparecen UNA sola vez, en los días de resumen)
+    # ------------------------------------------------------------------
+    def obtener_resueltas_pendientes(self, dias: int = 7) -> List[sqlite3.Row]:
+        """
+        Alarmas resueltas en los últimos `dias` días que todavía NO se han informado en un reporte.
+        Orden: la resuelta más recientemente primero.
+        """
+        with self.db.conectar() as conn:
+            return conn.execute("""
+                SELECT * FROM alarmas
+                WHERE estado='Restaurado'
+                  AND resuelta_avisada=0
+                  AND fecha_resolucion IS NOT NULL
+                  AND julianday('now', 'localtime') - julianday(fecha_resolucion) <= ?
+                ORDER BY fecha_resolucion DESC
+            """, (dias,)).fetchall()
+
+    def marcar_resueltas_avisadas(self, ids: List[int]) -> None:
+        """Marca como informadas las resueltas ya incluidas en un reporte enviado (no vuelven a salir)."""
+        if not ids:
+            return
+        with self.db.conectar() as conn:
+            conn.executemany("UPDATE alarmas SET resuelta_avisada=1 WHERE id=?", [(i,) for i in ids])
+
+    def descartar_resueltas_viejas(self, dias: int = 7) -> int:
+        """Las resueltas hace más de `dias` días que nunca se informaron se dan por vistas: no se muestran tarde."""
+        with self.db.conectar() as conn:
+            cur = conn.execute("""
+                UPDATE alarmas SET resuelta_avisada=1
+                WHERE estado='Restaurado' AND resuelta_avisada=0
+                  AND (fecha_resolucion IS NULL
+                       OR julianday('now', 'localtime') - julianday(fecha_resolucion) > ?)
+            """, (dias,))
+            return cur.rowcount
 
     def purgar_resueltas(self, dias: int = None) -> int:
         """Borra del historial las alarmas resueltas hace más de `dias` días. Devuelve cuántas."""

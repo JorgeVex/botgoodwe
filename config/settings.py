@@ -3,6 +3,10 @@ from pathlib import Path
 from dotenv import load_dotenv
 
 
+def _env_bool(nombre: str, defecto: bool = False) -> bool:
+    return os.getenv(nombre, str(defecto)).strip().lower() in {"1", "true", "yes", "si", "sí"}
+
+
 class Settings:
     """Configuración centralizada del bot: rutas, credenciales, XPaths y parámetros."""
 
@@ -33,7 +37,7 @@ class Settings:
             "panel_detalle_alarma": '//*[@id="modalWrap"]/div[7]/div[3]/div',
             "bloque_curva": '//*[@id="modalWrap"]/div[7]/div[3]/div/div[2]/div/div[6]/div',
             "panel_detalle_alarma": "//div[@id='modalWrap']//div[contains(@class,'ant-drawer-body')]",
-            "tabla_alarmas_body": "//div[contains(@class,'ant-table-body')]",  
+            "tabla_alarmas_body": "//div[contains(@class,'ant-table-body')]",
             "bloque_curva_relativo": "/div/div[6]",  # relativo a panel_detalle_alarma (ant-drawer-body)
         }
 
@@ -51,6 +55,12 @@ class Settings:
 
         # Umbrales de negocio
         self.dias_alarma_cronica = 5  # días activa sin resolverse para el resumen semanal
+        # Seguimiento de alarmas resueltas: solo se informan en estos días de la semana
+        # (0=lunes ... 6=domingo; por defecto miércoles y viernes) y UNA sola vez cada una.
+        # Se puede cambiar en el .env:  DIAS_RESUMEN_RESUELTAS=2,4
+        self.dias_resumen_resueltas = tuple(
+            int(x) for x in os.getenv("DIAS_RESUMEN_RESUELTAS", "2,4").split(",") if x.strip().isdigit())
+        self.ventana_resueltas_dias = 7   # no se informan resueltas de hace más de estos días
 
         # Logs
         self.logs_dir = self.base_dir / "logs"
@@ -59,18 +69,21 @@ class Settings:
 
         # Selenium
         self.timeout = 15
-        self.headless = False
         self.click_delay = 1.0
-        
-        
-                # Correo (envío de reportes)
+        # HEADLESS=true en el .env del servidor; en tu PC déjalo en false (o sin la variable)
+        self.headless = _env_bool("HEADLESS", False)
+        self.window_size = (1920, 1080)  # tamaño fijo en headless (la gráfica depende de él)
+        # Opcionales: rutas de Chrome/chromedriver si el servidor las necesita (normalmente vacío)
+        self.chrome_binary = os.getenv("CHROME_BINARY") or None
+        self.chromedriver_path = os.getenv("CHROMEDRIVER_PATH") or None
+
+        # Correo (envío de reportes)
         self.email_from = os.getenv("EMAIL_FROM")
         self.email_app_password = os.getenv("EMAIL_APP_PASSWORD")
         self.email_to = [e.strip() for e in os.getenv("EMAIL_TO", "").split(",") if e.strip()]
         self.smtp_server = "smtp.gmail.com"
         self.smtp_port = 587
-        
-        
+
     @staticmethod
     def _crear_directorios(*dirs):
         for d in dirs:

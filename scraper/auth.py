@@ -1,3 +1,4 @@
+import os
 import time
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -29,14 +30,39 @@ class GoodweAuth:
             )
 
     def iniciar_navegador(self):
-        """Inicializa el navegador Chrome controlado por Selenium."""
+        """Inicializa Chrome. Con HEADLESS=true (servidor) corre sin ventana y con tamaño fijo."""
         options = webdriver.ChromeOptions()
-        options.add_argument("--start-maximized")
+        ancho, alto = settings.window_size
+
         if settings.headless:
             options.add_argument("--headless=new")
+            # El tamaño fijo es clave: sin ventana, la gráfica y los clics dependen de él.
+            options.add_argument(f"--window-size={ancho},{alto}")
+            options.add_argument("--force-device-scale-factor=1")
+            # Requeridos en un servidor Linux (root, poca memoria compartida, sin GPU)
+            options.add_argument("--no-sandbox")
+            options.add_argument("--disable-dev-shm-usage")
+            options.add_argument("--disable-gpu")
+            # Evita que el sitio detecte "HeadlessChrome" en el user-agent
+            options.add_argument(
+                "--user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
+                "(KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
+            )
+        else:
+            options.add_argument("--start-maximized")
 
-        service = Service(ChromeDriverManager().install())
+        options.add_argument("--lang=es-CO")
+        if settings.chrome_binary:
+            options.binary_location = settings.chrome_binary
+
+        if settings.chromedriver_path:
+            service = Service(settings.chromedriver_path)
+        else:
+            service = Service(ChromeDriverManager().install())
+
         self.driver = webdriver.Chrome(service=service, options=options)
+        if settings.headless:
+            self.driver.set_window_size(ancho, alto)
         self.wait = WebDriverWait(self.driver, settings.timeout)
         return self.driver
 
@@ -91,6 +117,14 @@ class GoodweAuth:
         except TimeoutException:
             return False
 
+    def _guardar_captura_error(self):
+        """Si el login falla (sobre todo en servidor), deja una foto para ver qué pasó."""
+        try:
+            ruta = settings.logs_dir / "error_login.png"
+            self.driver.save_screenshot(str(ruta))
+        except Exception:  # noqa: BLE001
+            pass
+
     def login(self):
         """Ejecuta el flujo completo de acceso y devuelve el driver ya autenticado."""
         self._validar_credenciales_configuradas()
@@ -107,7 +141,8 @@ class GoodweAuth:
         time.sleep(3)
 
         if not self._validar_login():
-            raise RuntimeError("No se pudo validar el login en SEMS+. Verifica los XPath, las credenciales o si el checkbox de términos quedó marcado.")
+            self._guardar_captura_error()
+            raise RuntimeError("No se pudo validar el login en SEMS+. Verifica los XPath, las credenciales o si el checkbox de términos quedó marcado. (Captura en logs/error_login.png)")
 
         return self.driver
 

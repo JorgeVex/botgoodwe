@@ -8,6 +8,7 @@ Traducción inglés -> español de lo que muestra Goodwe, para los usuarios del 
 import json
 import logging
 import re
+import time
 
 from config.settings import settings
 
@@ -23,6 +24,7 @@ TRADUCCIONES = {
     "Grid Power Outage": "Corte de energía de la red",
     "Grid Frequency Out of Range": "Frecuencia de red fuera de rango",
     "Grid Voltage Out of Range": "Tensión de red fuera de rango",
+    "Meter Comm Loss": "Pérdida de comunicación con el medidor",
 }
 
 # ----------------------------------------------------------------------
@@ -31,6 +33,7 @@ TRADUCCIONES = {
 TRADUCCIONES_TIPO = {
     "Protection Events": "Eventos de protección",
     "Operating Condition Information": "Información de condición de operación",
+    "Communication Status": "Estado de comunicación",
 }
 
 # ----------------------------------------------------------------------
@@ -119,7 +122,12 @@ def traducir_texto(texto_en: str | None) -> str | None:
         if _traductor is None:
             from deep_translator import GoogleTranslator
             _traductor = GoogleTranslator(source="en", target="es")
-        traducido = _traductor.translate(texto)
+        time.sleep(0.3)   # Google limita a ~5 peticiones por segundo
+        try:
+            traducido = _traductor.translate(texto)
+        except Exception:  # noqa: BLE001  (límite de velocidad: esperar y reintentar una vez)
+            time.sleep(2)
+            traducido = _traductor.translate(texto)
         if traducido:
             cache[texto] = traducido
             _guardar_cache()
