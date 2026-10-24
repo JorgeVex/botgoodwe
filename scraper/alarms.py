@@ -66,7 +66,12 @@ class GoodweAlarmScraper(DetalleAlarmaMixin):
             XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
         const salida = [];
         for (let i = 0; i < filas.snapshotLength; i++) {
-            const tds = filas.snapshotItem(i).querySelectorAll('td');
+            const fila = filas.snapshotItem(i);
+            // Ant Design agrega filas auxiliares (medición / vacías): no son alarmas
+            if (fila.classList.contains('ant-table-measure-row') ||
+                fila.classList.contains('ant-table-placeholder') ||
+                fila.getAttribute('aria-hidden') === 'true') continue;
+            const tds = fila.querySelectorAll('td');
             salida.push(Array.from(tds).map(td => (td.innerText || '').trim()));
         }
         return salida;
@@ -106,6 +111,9 @@ class GoodweAlarmScraper(DetalleAlarmaMixin):
                 continue
 
             nombre_en = celdas[0].strip()
+            # Fila vacía (auxiliar de la tabla): sin nombre de alarma ni SN no es una alarma real
+            if not nombre_en or not celdas[6].strip():
+                continue
             alarmas.append(Alarma(
                 nombre_alarma=nombre_en,
                 nombre_alarma_es=traducir_alarma(nombre_en),
@@ -122,6 +130,34 @@ class GoodweAlarmScraper(DetalleAlarmaMixin):
             ))
 
         return alarmas
+
+    _JS_BUSCAR_FILA = """
+        const filas = document.evaluate(arguments[0], document, null,
+            XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
+        for (let i = 0; i < filas.snapshotLength; i++) {
+            const tds = filas.snapshotItem(i).querySelectorAll('td');
+            if (tds.length < 12) continue;
+            const t = k => (tds[k].innerText || '').trim();
+            if (t(6) === arguments[1] && t(0) === arguments[2] && t(4) === arguments[3]) return i + 1;
+        }
+        return null;
+    """
+
+    def _indice_fila(self, alarma, por_defecto: int) -> int:
+        """
+        Posición REAL (1-based, dentro de tbody) de la fila de esta alarma. No se usa el
+        número de orden de la lista, porque la tabla trae filas auxiliares (p. ej. la de
+        medición de Ant Design) que desplazan los índices y hacían abrir el detalle de otra alarma.
+        """
+        try:
+            xp = f"{self._xpath_tabla_body()}/table/tbody/tr"
+            idx = self.driver.execute_script(
+                self._JS_BUSCAR_FILA, xp, alarma.sn, alarma.nombre_alarma, alarma.hora_alarma)
+            if idx:
+                return int(idx)
+        except Exception:  # noqa: BLE001
+            pass
+        return por_defecto
 
     def _abrir_detalle_fila(self, fila_index: int) -> bool:
         """
@@ -174,8 +210,9 @@ class GoodweAlarmScraper(DetalleAlarmaMixin):
         fila_index: posición de la fila en la tabla actual (1-based).
         """
         try:
-            if not self._abrir_detalle_fila(fila_index):
-                raise TimeoutException(f"No se abrió el detalle de la fila {fila_index}")
+            fila_real = self._indice_fila(alarma, fila_index)
+            if not self._abrir_detalle_fila(fila_real):
+                raise TimeoutException(f"No se abrió el detalle de la fila {fila_real}")
 
             # Nombre de archivo de la curva: mismo formato que antes
             id_archivo = f"curva_{alarma.sn}_{alarma.hora_alarma}"
@@ -186,8 +223,11 @@ class GoodweAlarmScraper(DetalleAlarmaMixin):
             alarma.sugerencia = traducir_texto(detalle["sugerencia"]) or None
             alarma.ruta_curva = detalle["curva_path"]
 
-        except TimeoutException:
-            pass  # se guarda igual con los datos de la tabla general, sin detalle ampliado
+        except TimeoutException as e:
+            # se guarda igual con los datos de la tabla general, sin detalle ampliado
+            import logging
+            logging.getLogger("GoodweBot").warning(
+                "Sin detalle para '%s' (%s): %s", alarma.nombre_alarma, alarma.sn, e)
 
         finally:
             # 1) Cerrar el drawer de detalle y confirmar que se cerró (si queda abierto, la

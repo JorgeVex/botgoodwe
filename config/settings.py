@@ -70,8 +70,8 @@ class Settings:
         # Selenium
         self.timeout = 15
         self.click_delay = 1.0
-        # HEADLESS=true en el .env del servidor; en tu PC déjalo en false (o sin la variable)
-        self.headless = _env_bool("HEADLESS", False)
+
+        self.headless = _env_bool("HEADLESS", True)
         self.window_size = (1920, 1080)  # tamaño fijo en headless (la gráfica depende de él)
         # Opcionales: rutas de Chrome/chromedriver si el servidor las necesita (normalmente vacío)
         self.chrome_binary = os.getenv("CHROME_BINARY") or None
