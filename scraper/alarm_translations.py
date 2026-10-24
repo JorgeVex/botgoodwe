@@ -38,7 +38,20 @@ TRADUCCIONES_TIPO = {
 # (la clave se compara sin distinguir mayúsculas ni espacios de más).
 # Ejemplo:  "check the grid voltage.": "Verifique la tensión de la red.",
 # ----------------------------------------------------------------------
-TRADUCCIONES_TEXTO: dict[str, str] = {}
+TRADUCCIONES_TEXTO: dict[str, str] = {
+    # Razones
+    "CT Loss": "Pérdida de TC (transformador de corriente)",
+    "PE Loss": "Pérdida de PE (conexión a tierra)",
+    "1. The grid outage. 2. AC wiring or the switch is disconnected.":
+        "1. Corte de energía de la red. 2. El cableado AC o el interruptor está desconectado.",
+    # Sugerencias
+    "Check CT wiring": "Revisar el cableado del TC (transformador de corriente).",
+    "Check Ground Wire": "Revisar el cable de conexión a tierra.",
+    "1. The alarm goes away when the grid comes back up. 2. Check if the AC wiring or the switch is disconnected.":
+        "1. La alarma desaparece cuando regresa la energía de la red. 2. Revisar si el cableado AC o el interruptor está desconectado.",
+}
+
+TRADUCCIONES_CONFIRMACION = {"unconfirmed": "Sin confirmar", "confirmed": "Confirmada"}
 
 _CACHE_PATH = settings.base_dir / "data" / "traducciones_cache.json"
 _cache: dict[str, str] | None = None

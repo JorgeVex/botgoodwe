@@ -1108,3 +1108,81 @@ zoneinfo._common.ZoneInfoNotFoundError: 'No time zone found with key America/Bog
 2026-10-08 21:53:32,089 [INFO] PDF consolidado generado (7 alarmas): C:\Users\Lenovo\Desktop\goodwe_bot\reports_output\pdf\reporte_alarmas_20261008_2153.pdf
 2026-10-08 21:53:34,519 [INFO] Reporte enviado por correo a ['jorgehvelasco05@gmail.com', 'juan.rincon@sunnyapp.com']
 2026-10-08 21:53:36,954 [INFO] Ciclo finalizado. Navegador cerrado.
+2026-10-24 10:33:02,759 [INFO] Iniciando ciclo del bot.
+2026-10-24 10:33:02,766 [INFO] ====== WebDriver manager ======
+2026-10-24 10:33:06,062 [INFO] Get LATEST chromedriver version for google-chrome
+2026-10-24 10:33:06,329 [INFO] There is no [win64] chromedriver "155.0.8059.84" for browser google-chrome "155.0.8059" in cache
+2026-10-24 10:33:07,808 [INFO] There is no [win64] chromedriver "155.0.8059.84" for browser google-chrome "155.0.8059" in cache
+2026-10-24 10:33:07,808 [INFO] Get LATEST chromedriver version for google-chrome
+2026-10-24 10:33:08,190 [INFO] WebDriver version 155.0.8059.84 selected
+2026-10-24 10:33:08,199 [INFO] Modern chrome version https://storage.googleapis.com/chrome-for-testing-public/155.0.8059.84/win64/chromedriver-win64.zip
+2026-10-24 10:33:08,200 [INFO] About to download new driver from https://storage.googleapis.com/chrome-for-testing-public/155.0.8059.84/win64/chromedriver-win64.zip
+2026-10-24 10:33:08,588 [INFO] Driver downloading response is 200
+2026-10-24 10:33:11,538 [INFO] Driver has been saved in cache [C:\Users\Lenovo\.wdm\drivers\chromedriver\win64\155.0.8059.84]
+2026-10-24 10:33:36,234 [INFO] Login exitoso en SEMS+.
+2026-10-24 10:33:40,621 [INFO] Se leyeron 12 alarmas de la plataforma.
+2026-10-24 10:33:51,569 [WARNING] No se pudo traducir el texto (se deja en inglés): Server Error: You made too many requests to the server.According to google, you are allowed to make 5 requests per secondand up to 200k requests per day. You can wait and try again later oryou can try the translate_batch function
+2026-10-24 10:33:52,518 [WARNING] No se pudo traducir el texto (se deja en inglés): Server Error: You made too many requests to the server.According to google, you are allowed to make 5 requests per secondand up to 200k requests per day. You can wait and try again later oryou can try the translate_batch function
+2026-10-24 10:33:55,659 [INFO] Detalle listo: 'PE Loss' (5010KNBN25AL0074) | razón=sí | sugerencia=sí | curva=sí
+2026-10-24 10:34:05,394 [WARNING] No se pudo traducir el texto (se deja en inglés): Server Error: You made too many requests to the server.According to google, you are allowed to make 5 requests per secondand up to 200k requests per day. You can wait and try again later oryou can try the translate_batch function
+2026-10-24 10:34:06,119 [WARNING] No se pudo traducir el texto (se deja en inglés): Server Error: You made too many requests to the server.According to google, you are allowed to make 5 requests per secondand up to 200k requests per day. You can wait and try again later oryou can try the translate_batch function
+2026-10-24 10:34:09,240 [INFO] Detalle listo: 'CT Loss' (54200DSC251S0107) | razón=sí | sugerencia=sí | curva=sí
+2026-10-24 10:34:19,376 [WARNING] No se pudo traducir el texto (se deja en inglés): Server Error: You made too many requests to the server.According to google, you are allowed to make 5 requests per secondand up to 200k requests per day. You can wait and try again later oryou can try the translate_batch function
+2026-10-24 10:34:20,220 [WARNING] No se pudo traducir el texto (se deja en inglés): Server Error: You made too many requests to the server.According to google, you are allowed to make 5 requests per secondand up to 200k requests per day. You can wait and try again later oryou can try the translate_batch function
+2026-10-24 10:34:23,354 [INFO] Detalle listo: 'CT Loss' (56000NBB25AL0077) | razón=sí | sugerencia=sí | curva=sí
+2026-10-24 10:34:33,157 [WARNING] No se pudo traducir el texto (se deja en inglés): Server Error: You made too many requests to the server.According to google, you are allowed to make 5 requests per secondand up to 200k requests per day. You can wait and try again later oryou can try the translate_batch function
+2026-10-24 10:34:34,160 [WARNING] No se pudo traducir el texto (se deja en inglés): Server Error: You made too many requests to the server.According to google, you are allowed to make 5 requests per secondand up to 200k requests per day. You can wait and try again later oryou can try the translate_batch function
+2026-10-24 10:34:37,295 [INFO] Detalle listo: 'CT Loss' (56000NBB25AL0079) | razón=sí | sugerencia=sí | curva=sí
+2026-10-24 10:34:47,257 [WARNING] No se pudo traducir el texto (se deja en inglés): Server Error: You made too many requests to the server.According to google, you are allowed to make 5 requests per secondand up to 200k requests per day. You can wait and try again later oryou can try the translate_batch function
+2026-10-24 10:34:48,131 [WARNING] No se pudo traducir el texto (se deja en inglés): Server Error: You made too many requests to the server.According to google, you are allowed to make 5 requests per secondand up to 200k requests per day. You can wait and try again later oryou can try the translate_batch function
+2026-10-24 10:34:51,269 [INFO] Detalle listo: 'CT Loss' (56000NBB262L0036) | razón=sí | sugerencia=sí | curva=sí
+2026-10-24 10:35:01,128 [WARNING] No se pudo traducir el texto (se deja en inglés): Server Error: You made too many requests to the server.According to google, you are allowed to make 5 requests per secondand up to 200k requests per day. You can wait and try again later oryou can try the translate_batch function
+2026-10-24 10:35:01,920 [WARNING] No se pudo traducir el texto (se deja en inglés): Server Error: You made too many requests to the server.According to google, you are allowed to make 5 requests per secondand up to 200k requests per day. You can wait and try again later oryou can try the translate_batch function
+2026-10-24 10:35:05,053 [INFO] Detalle listo: 'PE Loss' (56000NBB263L0102) | razón=sí | sugerencia=sí | curva=sí
+2026-10-24 10:35:14,727 [WARNING] No se pudo traducir el texto (se deja en inglés): Server Error: You made too many requests to the server.According to google, you are allowed to make 5 requests per secondand up to 200k requests per day. You can wait and try again later oryou can try the translate_batch function
+2026-10-24 10:35:15,742 [WARNING] No se pudo traducir el texto (se deja en inglés): Server Error: You made too many requests to the server.According to google, you are allowed to make 5 requests per secondand up to 200k requests per day. You can wait and try again later oryou can try the translate_batch function
+2026-10-24 10:35:18,875 [INFO] Detalle listo: 'Grid Power Outage' (5017KDTR257L0023) | razón=sí | sugerencia=sí | curva=sí
+2026-10-24 10:35:28,812 [WARNING] No se pudo traducir el texto (se deja en inglés): Server Error: You made too many requests to the server.According to google, you are allowed to make 5 requests per secondand up to 200k requests per day. You can wait and try again later oryou can try the translate_batch function
+2026-10-24 10:35:29,810 [WARNING] No se pudo traducir el texto (se deja en inglés): Server Error: You made too many requests to the server.According to google, you are allowed to make 5 requests per secondand up to 200k requests per day. You can wait and try again later oryou can try the translate_batch function
+2026-10-24 10:35:32,920 [INFO] Detalle listo: 'PE Loss' (56000NBB25AL0077) | razón=sí | sugerencia=sí | curva=sí
+2026-10-24 10:35:42,842 [WARNING] No se pudo traducir el texto (se deja en inglés): Server Error: You made too many requests to the server.According to google, you are allowed to make 5 requests per secondand up to 200k requests per day. You can wait and try again later oryou can try the translate_batch function
+2026-10-24 10:35:43,644 [WARNING] No se pudo traducir el texto (se deja en inglés): Server Error: You made too many requests to the server.According to google, you are allowed to make 5 requests per secondand up to 200k requests per day. You can wait and try again later oryou can try the translate_batch function
+2026-10-24 10:35:46,760 [INFO] Detalle listo: 'PE Loss' (56000NBB262L0047) | razón=sí | sugerencia=sí | curva=sí
+2026-10-24 10:35:56,643 [WARNING] No se pudo traducir el texto (se deja en inglés): Server Error: You made too many requests to the server.According to google, you are allowed to make 5 requests per secondand up to 200k requests per day. You can wait and try again later oryou can try the translate_batch function
+2026-10-24 10:35:57,387 [WARNING] No se pudo traducir el texto (se deja en inglés): Server Error: You made too many requests to the server.According to google, you are allowed to make 5 requests per secondand up to 200k requests per day. You can wait and try again later oryou can try the translate_batch function
+2026-10-24 10:36:00,501 [INFO] Detalle listo: 'CT Loss' (56000NBB262L0005) | razón=sí | sugerencia=sí | curva=sí
+2026-10-24 10:36:10,356 [WARNING] No se pudo traducir el texto (se deja en inglés): Server Error: You made too many requests to the server.According to google, you are allowed to make 5 requests per secondand up to 200k requests per day. You can wait and try again later oryou can try the translate_batch function
+2026-10-24 10:36:11,061 [WARNING] No se pudo traducir el texto (se deja en inglés): Server Error: You made too many requests to the server.According to google, you are allowed to make 5 requests per secondand up to 200k requests per day. You can wait and try again later oryou can try the translate_batch function
+2026-10-24 10:36:14,175 [INFO] Detalle listo: 'PE Loss' (56000NBB262L0005) | razón=sí | sugerencia=sí | curva=sí
+2026-10-24 10:36:14,182 [INFO] Alarma cerrada (ya no aparece en Occurring): 'CT Loss' (54200DSC251S0107) desde 08/10/2026 05:52:31
+2026-10-24 10:36:14,182 [INFO] Alarma cerrada (ya no aparece en Occurring): 'PE Loss' (5010KNBN25AL0074) desde 25/09/2026 06:11:46
+2026-10-24 10:36:14,186 [INFO] Resumen del ciclo: {'nueva': 6, 'persistente': 5, 'resuelta': 2, 'sin_cambios': 1}
+2026-10-24 10:36:14,188 [WARNING] Sin base de zonas horarias (pip install tzdata); se usa UTC-05:00 fijo.
+2026-10-24 10:36:14,317 [INFO] Excel generado: C:\Users\Lenovo\Desktop\goodwe_bot\reports_output\excel\SunnyApp_Reporte_Alarmas_2026-10-24.xlsx (11 alarmas)
+2026-10-24 10:36:14,318 [INFO] Reporte Excel generado: C:\Users\Lenovo\Desktop\goodwe_bot\reports_output\excel\SunnyApp_Reporte_Alarmas_2026-10-24.xlsx
+2026-10-24 10:36:14,731 [INFO] PDF consolidado generado (11 alarmas): C:\Users\Lenovo\Desktop\goodwe_bot\reports_output\pdf\reporte_alarmas_20261024_1036.pdf
+2026-10-24 10:36:18,583 [INFO] Reporte enviado por correo a ['jorgehvelasco05@gmail.com', 'juan.rincon@sunnyapp.com']
+2026-10-24 10:36:20,999 [INFO] Ciclo finalizado. Navegador cerrado.
+2026-10-24 10:48:09,771 [INFO] Iniciando ciclo del bot.
+2026-10-24 10:48:09,781 [INFO] ====== WebDriver manager ======
+2026-10-24 10:48:12,186 [INFO] Driver [C:\Users\Lenovo\.wdm\drivers\chromedriver\win64\155.0.8059.84\chromedriver-win64/chromedriver.exe] found in cache by browser version
+2026-10-24 10:48:25,507 [INFO] Login exitoso en SEMS+.
+2026-10-24 10:48:28,952 [INFO] Se leyeron 12 alarmas de la plataforma.
+2026-10-24 10:48:41,825 [INFO] Detalle listo: 'PE Loss' (5010KNBN25AL0074) | razón=sí | sugerencia=sí | curva=sí
+2026-10-24 10:48:54,138 [INFO] Detalle listo: 'CT Loss' (54200DSC251S0107) | razón=sí | sugerencia=sí | curva=sí
+2026-10-24 10:49:06,488 [INFO] Detalle listo: 'CT Loss' (56000NBB25AL0077) | razón=sí | sugerencia=sí | curva=sí
+2026-10-24 10:49:18,471 [INFO] Detalle listo: 'CT Loss' (56000NBB25AL0079) | razón=sí | sugerencia=sí | curva=sí
+2026-10-24 10:49:30,781 [INFO] Detalle listo: 'CT Loss' (56000NBB262L0036) | razón=sí | sugerencia=sí | curva=sí
+2026-10-24 10:49:42,822 [INFO] Detalle listo: 'PE Loss' (56000NBB263L0102) | razón=sí | sugerencia=sí | curva=sí
+2026-10-24 10:49:55,129 [INFO] Detalle listo: 'Grid Power Outage' (5017KDTR257L0023) | razón=sí | sugerencia=sí | curva=sí
+2026-10-24 10:50:07,614 [INFO] Detalle listo: 'PE Loss' (56000NBB25AL0077) | razón=sí | sugerencia=sí | curva=sí
+2026-10-24 10:50:19,962 [INFO] Detalle listo: 'PE Loss' (56000NBB262L0047) | razón=sí | sugerencia=sí | curva=sí
+2026-10-24 10:50:32,247 [INFO] Detalle listo: 'CT Loss' (56000NBB262L0005) | razón=sí | sugerencia=sí | curva=sí
+2026-10-24 10:50:44,558 [INFO] Detalle listo: 'PE Loss' (56000NBB262L0005) | razón=sí | sugerencia=sí | curva=sí
+2026-10-24 10:50:44,562 [INFO] Resumen del ciclo: {'nueva': 0, 'persistente': 11, 'resuelta': 0, 'sin_cambios': 1}
+2026-10-24 10:50:44,564 [WARNING] Sin base de zonas horarias (pip install tzdata); se usa UTC-05:00 fijo.
+2026-10-24 10:50:44,662 [INFO] Excel generado: C:\Users\Lenovo\Desktop\goodwe_bot\reports_output\excel\SunnyApp_Reporte_Alarmas_2026-10-24_1050.xlsx (11 alarmas)
+2026-10-24 10:50:44,662 [INFO] Reporte Excel generado: C:\Users\Lenovo\Desktop\goodwe_bot\reports_output\excel\SunnyApp_Reporte_Alarmas_2026-10-24_1050.xlsx
+2026-10-24 10:50:45,030 [INFO] PDF consolidado generado (11 alarmas): C:\Users\Lenovo\Desktop\goodwe_bot\reports_output\pdf\reporte_alarmas_20261024_1050.pdf
+2026-10-24 10:50:50,409 [INFO] Reporte enviado por correo a ['jorgehvelasco05@gmail.com', 'juan.rincon@sunnyapp.com']
+2026-10-24 10:50:52,891 [INFO] Ciclo finalizado. Navegador cerrado.

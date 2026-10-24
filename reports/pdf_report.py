@@ -217,7 +217,7 @@ class PDFReportGenerator:
             [lab("Planta"), val(a["nombre_planta"]), lab("Hora de alarma"), val(a["hora_alarma"])],
             [lab("Equipo"), val(a.get("equipo")), lab("SN"), val(a["sn"])],
             [lab("Tipo de alarma"), val(a.get("tipo_alarma")), lab("Duración"), val(a.get("duracion"))],
-            [lab("Confirmación"), val(a.get("confirm_status")), lab("Recuperación"), val(a.get("recovery_time"))],
+            [lab("Confirmación"), val({"unconfirmed":"Sin confirmar","confirmed":"Confirmada"}.get(str(a.get("confirm_status") or "").strip().lower(), a.get("confirm_status"))), lab("Recuperación"), val(a.get("recovery_time"))],
         ], colWidths=[3.0 * cm, 6.2 * cm, 3.0 * cm, 6.2 * cm])
         datos.setStyle(TableStyle([
             ("VALIGN", (0, 0), (-1, -1), "TOP"),
