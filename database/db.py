@@ -202,17 +202,51 @@ class AlarmaRepository:
           dias_activa -> días desde la primera detección del bot
         Orden: nuevas primero y, dentro de cada grupo, la más reciente primero.
         """
+        dias_rec = getattr(settings, "dias_recurrencia", 30)
+        # "Previa" = misma alarma (mismo equipo y nombre) ya resuelta en los últimos N días.
+        previa = """
+            FROM alarmas p
+            WHERE p.sn = a.sn AND p.nombre_alarma = a.nombre_alarma AND p.id <> a.id
+              AND p.estado = 'Restaurado' AND p.fecha_resolucion IS NOT NULL
+              AND julianday('now', 'localtime') - julianday(p.fecha_resolucion) <= :dias
+        """
         with self.db.conectar() as conn:
-            return conn.execute("""
-                SELECT *,
-                    CASE WHEN date(primera_deteccion) = date('now', 'localtime')
-                         THEN 'Nueva' ELSE 'Persistente' END AS situacion,
-                    CAST(julianday('now', 'localtime') - julianday(primera_deteccion) AS INTEGER) AS dias_activa
-                FROM alarmas
-                WHERE estado='Ocurriendo'
-                ORDER BY (date(primera_deteccion) = date('now', 'localtime')) DESC,
-                         ultima_deteccion DESC
-            """).fetchall()
+            return conn.execute(f"""
+                SELECT a.*,
+                    CASE WHEN date(a.primera_deteccion) <> date('now', 'localtime') THEN 'Persistente'
+                         WHEN EXISTS (SELECT 1 {previa}) THEN 'Recurrente'
+                         ELSE 'Nueva' END AS situacion,
+                    1 + (SELECT COUNT(*) {previa}) AS apariciones,
+                    CAST(julianday('now', 'localtime') - julianday(a.primera_deteccion) AS INTEGER) AS dias_activa
+                FROM alarmas a
+                WHERE a.estado='Ocurriendo'
+                ORDER BY CASE WHEN date(a.primera_deteccion) <> date('now', 'localtime') THEN 2
+                              WHEN EXISTS (SELECT 1 {previa}) THEN 1 ELSE 0 END,
+                         a.ultima_deteccion DESC
+            """, {"dias": dias_rec}).fetchall()
+
+    @staticmethod
+    def agrupar_resueltas(filas) -> list:
+        """
+        Agrupa las resueltas por (equipo, alarma): una fila por alarma con cuántas veces se resolvió.
+        Devuelve dicts con los datos de la ocurrencia más reciente + 'apariciones' + 'ids' (todas las
+        filas agrupadas, para marcarlas como informadas). Orden: la resuelta más recientemente primero.
+        """
+        grupos: dict = {}
+        for r in filas:
+            d = {k: r[k] for k in r.keys()}
+            clave = (d["sn"], d["nombre_alarma"])
+            g = grupos.get(clave)
+            if g is None:
+                d["apariciones"], d["ids"] = 1, [d["id"]]
+                grupos[clave] = d
+                continue
+            g["apariciones"] += 1
+            g["ids"].append(d["id"])
+            if str(d.get("fecha_resolucion") or "") > str(g.get("fecha_resolucion") or ""):
+                d["apariciones"], d["ids"] = g["apariciones"], g["ids"]
+                grupos[clave] = d
+        return sorted(grupos.values(), key=lambda g: str(g.get("fecha_resolucion") or ""), reverse=True)
 
     def obtener_persistentes(self, dias_minimo: int = None) -> List[sqlite3.Row]:
         dias_minimo = dias_minimo or settings.dias_alarma_cronica

@@ -208,6 +208,7 @@ def preparar_registros(alarmas) -> list[dict]:
             "nombre": nombre_es,
             "estado": estado,
             "situacion": _texto(a.get("situacion"), "-"),
+            "apariciones": a.get("apariciones") or 1,
             "delta": delta,
             "duracion": formatear_duracion(delta, a.get("duracion")),
             "sugerencia": sugerencia_para(a, nombre_es),
@@ -221,7 +222,8 @@ def preparar_registros(alarmas) -> list[dict]:
     for r in registros:
         r["planta_grupo"] = _nombre_representativo(variantes[clave_planta(r["planta"])])
     # Nuevas primero; dentro de cada grupo, la más reciente primero (fechas inválidas al final)
-    registros.sort(key=lambda r: (r["situacion"] != "Nueva", -(r["hora"].timestamp() if r["hora"] else 0)))
+    orden = {"Nueva": 0, "Recurrente": 1}
+    registros.sort(key=lambda r: (orden.get(r["situacion"], 2), -(r["hora"].timestamp() if r["hora"] else 0)))
     return registros
 
 
@@ -361,7 +363,8 @@ class ExcelReportGenerator:
             ("Alarmas activas", len(activas), 2, 2, AZUL, BLANCO),
             ("Críticas activas", len(criticas), 3, 4, ROJO_SUAVE if criticas else VERDE_SUAVE,
              ROJO_TEXTO if criticas else "2E7D32"),
-            ("Resueltas", len(self.resueltas) if self.resueltas is not None else "—", 5, 5, VERDE_SUAVE, "2E7D32"),
+            ("Resueltas", sum(r.get("apariciones") or 1 for r in self.resueltas)
+             if self.resueltas is not None else "—", 5, 5, VERDE_SUAVE, "2E7D32"),
             ("Plantas afectadas", len(plantas), 6, 7, GRIS_CLARO, AZUL_OSCURO),
             ("Mayor duración activa", texto_mayor, 8, len(COLUMNAS), AMARILLO_SUAVE, "7F6000"),
         ]
@@ -434,6 +437,10 @@ class ExcelReportGenerator:
             sit = ws.cell(row=fila, column=8)
             if r["situacion"] == "Nueva":
                 sit.font = Font(name=FUENTE, size=10, bold=True, color=NARANJA)
+            elif r["situacion"] == "Recurrente":
+                sit.font = Font(name=FUENTE, size=10, bold=True, color="7030A0")
+                if r["apariciones"] > 1:
+                    sit.value = f"Recurrente ({r['apariciones']}.ª vez)"
             elif r["situacion"] == "Persistente":
                 sit.font = Font(name=FUENTE, size=10, bold=True, color=AZUL_OSCURO)
 
@@ -528,8 +535,10 @@ class ExcelReportGenerator:
         "Por tipo: los \"Eventos de protección\" suelen requerir atención más rápida. La \"Información de condición "
         "de operación\" son avisos del equipo (por ejemplo, pérdida de PE o de TC) que el equipo técnico debe "
         "validar en sitio; no confirman por sí solos un daño físico.",
-        "Nueva / Persistente: \"Nueva\" significa que el sistema la detectó por primera vez hoy; \"Persistente\", que "
-        "ya venía de lecturas anteriores. No indica cuándo empezó la alarma: eso lo dice la columna Duración.",
+        "Nueva / Recurrente / Persistente: \"Nueva\" es una alarma que el sistema ve por primera vez hoy; "
+        "\"Recurrente\", una que ya se había resuelto antes en ese mismo equipo y volvió a aparecer (por ejemplo, "
+        "a diario al amanecer); \"Persistente\", la que viene de lecturas anteriores sin resolverse. No indica "
+        "cuándo empezó la alarma: eso lo dice la columna Duración.",
         "Alarmas más antiguas: llevan más tiempo sin resolverse; son la prioridad de seguimiento.",
         "Las alarmas resueltas salen automáticamente del reporte y no se muestran aquí.",
     ]
@@ -540,8 +549,9 @@ class ExcelReportGenerator:
     def _hoja_resueltas(self):
         ws = self.wb.create_sheet(HOJA_RESUELTAS)
         ws.sheet_view.showGridLines = False
-        encabezados = [("Fecha de resolución", 21), ("Nombre de la planta", 36), ("SN", 22), ("Equipo", 18),
-                       ("Nombre de la alarma", 30), ("Tipo de alarma", 30), ("Estuvo activa", 20)]
+        encabezados = [("Detectada como resuelta", 22), ("Nombre de la planta", 36), ("SN", 22), ("Equipo", 18),
+                       ("Nombre de la alarma", 30), ("Tipo de alarma", 30), ("Veces resuelta", 12),
+                       ("Última duración vista", 22)]
         self._anchos(ws, [w for _, w in encabezados])
 
         ws.merge_cells(start_row=1, start_column=1, end_row=1, end_column=len(encabezados))
@@ -550,8 +560,8 @@ class ExcelReportGenerator:
         ws["A1"].alignment = Alignment(vertical="center", indent=1)
         ws.row_dimensions[1].height = 30
         ws.merge_cells(start_row=2, start_column=1, end_row=2, end_column=len(encabezados))
-        ws["A2"] = ("Estas alarmas ya no aparecen en la plataforma. Se informan una sola vez y no vuelven "
-                    "a mostrarse en próximos reportes.")
+        ws["A2"] = ("Una fila por alarma. La fecha es la lectura diaria en que se notó que ya no estaba activa y la "
+                    "duración es la última vista (no la real). Se informan una sola vez.")
         ws["A2"].font = Font(name=FUENTE, size=10, italic=True, color="595959")
         ws["A2"].alignment = Alignment(indent=1)
 
@@ -579,7 +589,7 @@ class ExcelReportGenerator:
             filas.append((resolucion, [
                 resolucion or _texto(a.get("fecha_resolucion")), _texto(a.get("nombre_planta")),
                 _texto(a.get("sn")), _texto(a.get("equipo")), nombre_es, tipo,
-                formatear_duracion(delta, a.get("duracion")),
+                a.get("apariciones") or 1, formatear_duracion(delta, a.get("duracion")),
             ]))
         filas.sort(key=lambda t: t[0] or datetime.min, reverse=True)
 

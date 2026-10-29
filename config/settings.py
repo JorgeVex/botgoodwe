@@ -61,6 +61,8 @@ class Settings:
         self.dias_resumen_resueltas = tuple(
             int(x) for x in os.getenv("DIAS_RESUMEN_RESUELTAS", "2,4").split(",") if x.strip().isdigit())
         self.ventana_resueltas_dias = 7   # no se informan resueltas de hace más de estos días
+        # Una alarma que reaparece (mismo equipo y nombre) dentro de estos días se marca "Recurrente", no "Nueva"
+        self.dias_recurrencia = 30
 
         # Logs
         self.logs_dir = self.base_dir / "logs"
@@ -70,8 +72,8 @@ class Settings:
         # Selenium
         self.timeout = 15
         self.click_delay = 1.0
-
-        self.headless = _env_bool("HEADLESS", True)
+        # HEADLESS=true en el .env del servidor; en tu PC déjalo en false (o sin la variable)
+        self.headless = _env_bool("HEADLESS", False)
         self.window_size = (1920, 1080)  # tamaño fijo en headless (la gráfica depende de él)
         # Opcionales: rutas de Chrome/chromedriver si el servidor las necesita (normalmente vacío)
         self.chrome_binary = os.getenv("CHROME_BINARY") or None
@@ -81,8 +83,16 @@ class Settings:
         self.email_from = os.getenv("EMAIL_FROM")
         self.email_app_password = os.getenv("EMAIL_APP_PASSWORD")
         self.email_to = [e.strip() for e in os.getenv("EMAIL_TO", "").split(",") if e.strip()]
-        self.smtp_server = "smtp.gmail.com"
-        self.smtp_port = 587
+        # Servidor SMTP. Por defecto Gmail (587). En DigitalOcean los puertos 25/465/587 están
+        # bloqueados: allí se usa un relay por el puerto 2525 (p. ej. Brevo) con estas variables:
+        #   SMTP_SERVER=smtp-relay.brevo.com   SMTP_PORT=2525
+        #   SMTP_USER=<login SMTP>             SMTP_PASSWORD=<clave SMTP>
+        # Si no se definen SMTP_USER / SMTP_PASSWORD se usan EMAIL_FROM / EMAIL_APP_PASSWORD (Gmail).
+        self.smtp_server = os.getenv("SMTP_SERVER", "smtp.gmail.com")
+        self.smtp_port = int(os.getenv("SMTP_PORT", "587"))
+        self.smtp_user = os.getenv("SMTP_USER") or self.email_from
+        self.smtp_password = os.getenv("SMTP_PASSWORD") or self.email_app_password
+        self.smtp_timeout = 30
 
     @staticmethod
     def _crear_directorios(*dirs):

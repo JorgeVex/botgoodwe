@@ -1,54 +1,59 @@
+import logging
+import mimetypes
 import smtplib
+import time
 from email.message import EmailMessage
 from pathlib import Path
 
 from config.settings import settings
 
+log = logging.getLogger(__name__)
+
 
 class ReportMailer:
-    """Envía los reportes generados por correo electrónico (SMTP)."""
+    """Envía los reportes (Excel + PDF) por correo vía SMTP (configurable en el .env)."""
 
-    MIME_TYPES = {
-        ".xlsx": ("application", "vnd.openxmlformats-officedocument.spreadsheetml.sheet"),
-        ".pdf": ("application", "pdf"),
-        ".png": ("image", "png"),
-    }
+    REINTENTOS = 2
 
-    def __init__(self):
-        self._validar_configuracion()
-
-    @staticmethod
-    def _validar_configuracion():
-        if not settings.email_from or not settings.email_app_password or not settings.email_to:
-            raise RuntimeError(
-                "Faltan variables de correo en config/.env "
-                "(EMAIL_FROM, EMAIL_APP_PASSWORD, EMAIL_TO)."
-            )
-
-    def enviar_reporte(self, asunto: str, cuerpo: str, adjuntos: list[str] = None):
-        """Envía un correo con los reportes indicados como archivos adjuntos."""
-        # EMAIL_TO puede traer varios correos separados por coma
-        bruto = settings.email_to
-        if isinstance(bruto, str):
-            bruto = bruto.split(",")
-        destinatarios = [e.strip() for e in bruto if e.strip()]
-
+    def _construir_mensaje(self, asunto: str, cuerpo: str, adjuntos) -> EmailMessage:
+        if not settings.email_to:
+            raise RuntimeError("EMAIL_TO no está configurado en config/.env")
         msg = EmailMessage()
         msg["Subject"] = asunto
         msg["From"] = settings.email_from
-        msg["To"] = ", ".join(destinatarios)
+        msg["To"] = ", ".join(settings.email_to)
         msg.set_content(cuerpo)
 
-        for ruta_str in (adjuntos or []):
-            self._adjuntar_archivo(msg, Path(ruta_str))
+        for ruta in adjuntos or []:
+            ruta = Path(ruta)
+            tipo, _ = mimetypes.guess_type(ruta.name)
+            principal, secundario = (tipo or "application/octet-stream").split("/", 1)
+            msg.add_attachment(ruta.read_bytes(), maintype=principal, subtype=secundario,
+                               filename=ruta.name)
+        return msg
 
-        with smtplib.SMTP(settings.smtp_server, settings.smtp_port) as server:
-            server.starttls()
-            server.login(settings.email_from, settings.email_app_password)
-            server.send_message(msg, to_addrs=destinatarios)
+    def _enviar_una_vez(self, msg: EmailMessage):
+        host, puerto = settings.smtp_server, settings.smtp_port
+        if puerto == 465:   # SSL implícito
+            servidor = smtplib.SMTP_SSL(host, puerto, timeout=settings.smtp_timeout)
+        else:               # STARTTLS (587, 2525, ...)
+            servidor = smtplib.SMTP(host, puerto, timeout=settings.smtp_timeout)
+        with servidor as server:
+            if puerto != 465:
+                server.starttls()
+            server.login(settings.smtp_user, settings.smtp_password)
+            server.send_message(msg, to_addrs=settings.email_to)
 
-    def _adjuntar_archivo(self, msg: EmailMessage, ruta: Path):
-        if not ruta.exists():
-            return
-        maintype, subtype = self.MIME_TYPES.get(ruta.suffix.lower(), ("application", "octet-stream"))
-        msg.add_attachment(ruta.read_bytes(), maintype=maintype, subtype=subtype, filename=ruta.name)
+    def enviar_reporte(self, asunto: str, cuerpo: str, adjuntos=None):
+        msg = self._construir_mensaje(asunto, cuerpo, adjuntos)
+        ultimo_error = None
+        for intento in range(1, self.REINTENTOS + 1):
+            try:
+                self._enviar_una_vez(msg)
+                return
+            except Exception as e:  # noqa: BLE001
+                ultimo_error = e
+                log.warning("Envío de correo falló (intento %d/%d) por %s:%s -> %s",
+                            intento, self.REINTENTOS, settings.smtp_server, settings.smtp_port, e)
+                time.sleep(3)
+        raise ultimo_error

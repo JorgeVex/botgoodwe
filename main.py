@@ -115,8 +115,10 @@ class GoodweBot:
             self.repo.descartar_resueltas_viejas(dias)   # las muy antiguas nunca se muestran
             if datetime.now().weekday() not in settings.dias_resumen_resueltas:
                 return []
-            resueltas = self.repo.obtener_resueltas_pendientes(dias)
-            self.logger.info(f"Hoy es día de resumen: {len(resueltas)} alarma(s) resuelta(s) por informar.")
+            # Una fila por (equipo, alarma): las que reaparecen a diario salen una vez con "N veces"
+            resueltas = self.repo.agrupar_resueltas(self.repo.obtener_resueltas_pendientes(dias))
+            total = sum(r["apariciones"] for r in resueltas)
+            self.logger.info(f"Hoy es día de resumen: {total} resolución(es) en {len(resueltas)} alarma(s) por informar.")
             return resueltas
         except Exception as e:
             self.logger.exception(f"No se pudieron consultar las alarmas resueltas: {e}")
@@ -129,11 +131,11 @@ class GoodweBot:
 
         # Una sola regla para "Nueva/Persistente" en Excel y PDF: la de la base de datos
         # (Nueva = primera detección HOY; Persistente = viene de días anteriores).
-        situacion = {(r["sn"], r["nombre_alarma"], r["hora_alarma"]): r["situacion"].lower()
+        situacion = {(r["sn"], r["nombre_alarma"], r["hora_alarma"]): (r["situacion"].lower(), r["apariciones"])
                      for r in activas}
         for f in fichas:
-            f["clasificacion"] = situacion.get(
-                (f["sn"], f["nombre_alarma"], f["hora_alarma"]), f["clasificacion"])
+            f["clasificacion"], f["apariciones"] = situacion.get(
+                (f["sn"], f["nombre_alarma"], f["hora_alarma"]), (f["clasificacion"], 1))
 
         ruta_excel = ExcelReportGenerator(activas, resueltas=resueltas if dia_resumen else None).generar()
         self.logger.info(f"Reporte Excel generado: {ruta_excel}")
@@ -149,7 +151,8 @@ class GoodweBot:
                 cuerpo=(
                     f"Adjunto el reporte diario de alarmas (Excel) y el informe consolidado en PDF "
                     f"con el detalle de {len(fichas)} alarma(s), generados automáticamente por el bot."
-                    + (f"\n\nResumen de seguimiento: {len(resueltas)} alarma(s) se resolvieron desde el "
+                    + (f"\n\nResumen de seguimiento: {sum(r['apariciones'] for r in resueltas)} resolución(es) "
+                       f"({len(resueltas)} alarma(s) distintas) se registraron desde el "
                        f"último aviso (ver la hoja 'Resueltas' del Excel y el final de la primera página del PDF)."
                        if dia_resumen and resueltas else "")
                 ),
@@ -157,7 +160,7 @@ class GoodweBot:
             )
             self.logger.info(f"Reporte enviado por correo a {settings.email_to}")
             # Solo si el correo salió: las resueltas ya informadas no vuelven a aparecer
-            self.repo.marcar_resueltas_avisadas([r["id"] for r in resueltas])
+            self.repo.marcar_resueltas_avisadas([i for r in resueltas for i in r["ids"]])
         except Exception as e:
             self.logger.exception(f"No se pudo enviar el correo: {e}")
 

@@ -72,7 +72,9 @@ class PDFReportGenerator:
         """Fallos primero, luego las nuevas antes que las persistentes, luego por planta."""
         return sorted(
             alarmas,
-            key=lambda a: (a["nivel"] != "Fallo", a.get("clasificacion") != "nueva", a["nombre_planta"]),
+            key=lambda a: (a["nivel"] != "Fallo",
+                           {"nueva": 0, "recurrente": 1}.get(a.get("clasificacion"), 2),
+                           a["nombre_planta"]),
         )
 
     def _crear_estilos(self):
@@ -134,15 +136,16 @@ class PDFReportGenerator:
     def _resumen(self):
         total = len(self.alarmas)
         nuevas = sum(1 for a in self.alarmas if a.get("clasificacion") == "nueva")
+        recurrentes = sum(1 for a in self.alarmas if a.get("clasificacion") == "recurrente")
         persistentes = sum(1 for a in self.alarmas if a.get("clasificacion") == "persistente")
         fallos = sum(1 for a in self.alarmas if a["nivel"] == "Fallo")
 
         elementos = [Paragraph("Resumen del reporte", self.s_h1)]
 
         kpis = Table(
-            [[str(total), str(nuevas), str(persistentes), str(fallos)],
-             ["Alarmas activas", "Nuevas", "Persistentes", "Fallos críticos"]],
-            colWidths=[4.6 * cm] * 4,
+            [[str(total), str(nuevas), str(recurrentes), str(persistentes), str(fallos)],
+             ["Alarmas activas", "Nuevas", "Recurrentes", "Persistentes", "Fallos críticos"]],
+            colWidths=[3.7 * cm] * 5,
         )
         kpis.setStyle(TableStyle([
             ("ALIGN", (0, 0), (-1, -1), "CENTER"),
@@ -174,7 +177,7 @@ class PDFReportGenerator:
                 Paragraph(escape(a["nombre_planta"]), self.s_celda),
                 Paragraph(alarma_txt, self.s_celda),
                 Paragraph(f'<font color="{color_nivel}"><b>{escape(a["nivel"])}</b></font>', self.s_celda),
-                Paragraph(escape((a.get("clasificacion") or "-").capitalize()), self.s_celda),
+                Paragraph(self._situacion_txt(a), self.s_celda),
                 Paragraph(escape(a.get("duracion") or "-"), self.s_celda),
             ])
 
@@ -193,13 +196,26 @@ class PDFReportGenerator:
             elementos += self._seccion_resueltas()
         return elementos
 
+    @staticmethod
+    def _situacion_txt(a) -> str:
+        """'Recurrente' lleva el número de aparición ('Recurrente · 4.ª vez') cuando se conoce."""
+        txt = escape((a.get("clasificacion") or "-").capitalize())
+        veces = a.get("apariciones") or 1
+        if a.get("clasificacion") == "recurrente" and veces > 1:
+            txt += f'<br/><font size="7" color="grey">{veces}.ª vez</font>'
+        return txt
+
     def _seccion_resueltas(self):
-        """Tabla compacta (sin fichas) con las alarmas resueltas desde el último aviso."""
+        """Tabla compacta (sin fichas): una fila por alarma resuelta desde el último aviso."""
         el = [Spacer(1, 18), Paragraph("Alarmas resueltas desde el último aviso", self.s_h1)]
         if not self.resueltas:
             el.append(Paragraph("No hubo alarmas resueltas desde el último aviso.", self.s_celda))
             return el
-        enc = ["Resuelta", "Planta", "Alarma", "Equipo", "Estuvo activa"]
+        el.append(Paragraph(
+            "El bot lee la plataforma una vez al día: la fecha es la lectura en que se notó que la alarma ya no "
+            "estaba activa, y la duración es la última que se vio (no la duración real). Las alarmas que se "
+            "repiten aparecen en una sola fila con el número de veces.", self.s_sub))
+        enc = ["Detectada resuelta", "Planta", "Alarma", "Equipo", "Veces", "Última duración vista"]
         filas = [[Paragraph(h, self.s_celda_head) for h in enc]]
         for a in self.resueltas:
             nombre_en = a.get("nombre_alarma") or "-"
@@ -210,9 +226,10 @@ class PDFReportGenerator:
                 Paragraph(escape(a.get("nombre_planta") or "-"), self.s_celda),
                 Paragraph(escape(nombre_es), self.s_celda),
                 Paragraph(escape(a.get("equipo") or "-"), self.s_celda),
+                Paragraph(str(a.get("apariciones") or 1), self.s_celda),
                 Paragraph(escape(a.get("duracion") or "-"), self.s_celda),
             ])
-        t = Table(filas, colWidths=[3.2 * cm, 5.6 * cm, 4.4 * cm, 2.4 * cm, 2.9 * cm], repeatRows=1)
+        t = Table(filas, colWidths=[3.0 * cm, 5.0 * cm, 3.8 * cm, 2.2 * cm, 1.4 * cm, 3.1 * cm], repeatRows=1)
         t.setStyle(TableStyle([
             ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#2E7D32")),
             ("ROWBACKGROUNDS", (0, 1), (-1, -1), [colors.white, colors.HexColor("#E2F0D9")]),
@@ -232,6 +249,8 @@ class PDFReportGenerator:
         nombre_es = a.get("nombre_alarma_es")
         color_nivel = self.HEX_ROJO if a["nivel"] == "Fallo" else self.HEX_AMBAR
         clasificacion = (a.get("clasificacion") or "-").capitalize()
+        if a.get("clasificacion") == "recurrente" and (a.get("apariciones") or 1) > 1:
+            clasificacion += f" ({a['apariciones']}.ª vez)"
 
         elementos = [Paragraph(f"{idx}. {escape(nombre_es or nombre_en)}", self.s_titulo)]
         if nombre_es:
